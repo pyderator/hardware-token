@@ -5,8 +5,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { Fragment, useState } from "react";
 import InputField from "../components/Fields/InputField";
-import { codes } from "../Datas/phoneNumberCodes";
+import { codes } from "../datas/phoneNumberCodes";
 import BaseLayout from "../layouts/baselayout";
+import { H1 } from "../components/Headers/H1";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -23,10 +24,8 @@ const Register = () => {
           {/* Register Div */}
           <div className="flex align-center justify-center">
             <div className="h-full bg-white p-8">
-              <h1 className="font-bold text-2xl md:text-4xl text-gray-800 pb-2">
-                Register an account
-              </h1>
-              <div className="flex flex-row">
+              <H1>Register an account</H1>
+              <div className="flex flex-row mt-2">
                 <p className="text-sm font-bold text-gray-500 mr-2">
                   Already have an Account ?
                 </p>
