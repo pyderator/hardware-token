@@ -20,10 +20,10 @@ const Register = () => {
         <Head>
           <title>Register</title>
         </Head>
-        <main className=" h-screen w-screen">
+        <main className=" h-screen">
           {/* Register Div */}
           <div className="flex align-center justify-center">
-            <div className="h-full bg-white p-8">
+            <div className="h-full bg-white">
               <H1>Register an account</H1>
               <div className="flex flex-row mt-2">
                 <p className="text-sm font-bold text-gray-500 mr-2">

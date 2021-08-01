@@ -20,10 +20,10 @@ const Login = () => {
         <Head>
           <title>Login</title>
         </Head>
-        <main className="h-screen w-screen">
+        <main className="h-screen">
           {/* Login Div */}
           <div className="flex align-center justify-center">
-            <div className="h-full bg-white p-8 w-full md:min-w-[400px] md:max-w-[400px]">
+            <div className="h-full bg-white w-full md:min-w-[400px] md:max-w-[400px]">
               <div className="text-center">
                 <H1>Login</H1>
               </div>
