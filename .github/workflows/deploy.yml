@@ -9,6 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: Production
     steps:
+      -name: "Clear Folder"
+        run: |
+          rm -rf *
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
