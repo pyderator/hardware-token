@@ -7,7 +7,7 @@
 ### Team Members
 
 1. Gaurav Jha
-2. Adit Shrestha
+2. Aadit Shrestha
 3. Alvin Shrestha
 4. Ishan Uprety
 5. Ankeet Ghimire
