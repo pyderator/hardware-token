@@ -10,7 +10,7 @@
 2. Aadit Shrestha
 3. Alvin Shrestha
 4. Ishan Uprety
-5. Ankeet Ghimire
+5. Ankit Ghimire
 6. Swapnil Thapa
 
 ## Project Title
