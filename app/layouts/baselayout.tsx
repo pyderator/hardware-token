@@ -26,7 +26,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         />
       </Head>
       <Navbar />
-      <div className="mb-4">
+      <div className="mb-4 mx-1">
         <Updates />
       </div>
       <motion.main
@@ -35,6 +35,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         exit="exit"
         variants={variants}
         transition={{ type: "linear" }}
+        className="px-4"
       >
         {children}
       </motion.main>

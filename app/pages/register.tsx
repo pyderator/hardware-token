@@ -23,7 +23,7 @@ const Register = () => {
         <main className=" h-screen">
           {/* Register Div */}
           <div className="flex align-center justify-center">
-            <div className="h-full bg-white">
+            <div className="h-full bg-white w-full md:min-w-[400px] max-w-[400px]">
               <H1>Register an account</H1>
               <div className="flex flex-row mt-2">
                 <p className="text-sm font-bold text-gray-500 mr-2">

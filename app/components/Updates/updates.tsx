@@ -5,7 +5,7 @@ import React from "react";
 
 export const Updates = () => {
   return (
-    <div className="w-full px-4 pt-16">
+    <div className="w-full pt-16">
       <div className="w-full max-w-md p-2 mx-auto bg-white rounded-2xl">
         <Disclosure>
           {({ open }) => (
@@ -31,10 +31,10 @@ export const Updates = () => {
                   className="px-4 pt-4 pb-2 text-sm text-gray-500 grid grid-cols-1 gap-y-4"
                 >
                   <Link href="/register">
-                    <span>
+                    <a>
                       1. Added Register Page |{" "}
                       <span className="text-xs text-blue-600">1 Aug, 2021</span>
-                    </span>
+                    </a>
                   </Link>
                   <Link href="https://github.com/pyderator/hardware-token/actions">
                     <a target="_blank">
@@ -43,10 +43,10 @@ export const Updates = () => {
                     </a>
                   </Link>
                   <Link href="/login">
-                    <span>
+                    <a>
                       3. Added Login Page |{" "}
                       <span className="text-xs text-blue-600">1 Aug, 2021</span>
-                    </span>
+                    </a>
                   </Link>
                 </Disclosure.Panel>
               </Transition>
