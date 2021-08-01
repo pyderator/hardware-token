@@ -144,8 +144,8 @@ const Register = () => {
                         className={`${
                           !isAgreed
                             ? "cursor-not-allowed hover:bg-red-600 hover:border-red-500"
-                            : ""
-                        } border-[1.2px] rounded-md text-sm text-gray-700 font-regular border-blue-400 p-2 hover:bg-blue-600 hover:text-white`}
+                            : "border-blue-400 hover:bg-blue-600"
+                        } border-[1.2px] rounded-md text-sm text-gray-700 font-regular p-2 hover:text-white`}
                       >
                         Register
                       </button>
