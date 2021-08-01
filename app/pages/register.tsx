@@ -1,12 +1,12 @@
-import Head from "next/head";
-import Link from "next/link";
-import BaseLayout from "../layouts/baselayout";
-import { Formik, Form } from "formik";
-import InputField from "../components/Fields/InputField";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
-import { Fragment, useEffect, useState } from "react";
+import { Form, Formik } from "formik";
+import Head from "next/head";
+import Link from "next/link";
+import { Fragment, useState } from "react";
+import InputField from "../components/Fields/InputField";
 import { codes } from "../Datas/phoneNumberCodes";
+import BaseLayout from "../layouts/baselayout";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
@@ -52,6 +52,7 @@ const Register = () => {
                         type="text"
                         name="accountNumber"
                         label="Account Number"
+                        placeholder="Enter your account number"
                       />
                       <div className="flex items-end">
                         <Menu
@@ -123,6 +124,7 @@ const Register = () => {
                           type="text"
                           name="mobileNumber"
                           label="Mobile Number"
+                          placeholder="Enter your account associated mobile number"
                         />
                       </div>
                       <div className="flex items-center">

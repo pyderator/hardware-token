@@ -5,11 +5,13 @@ const InputField = ({
   type,
   name,
   label,
+  placeholder,
 }: {
   id: string;
   type: string;
   name: string;
   label?: string;
+  placeholder?: string;
 }) => {
   return (
     <div className="w-full group focus-within:text-blue-500">
@@ -21,6 +23,7 @@ const InputField = ({
           id={id}
           name={name}
           type={type}
+          placeholder={placeholder}
           className="pb-[4px] font-regular text-xs text-gray-600 w-full border-b-[1px] border-gray-300 outline-none focus:border-blue-500"
         />
       </div>
