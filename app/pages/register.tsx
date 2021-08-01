@@ -87,8 +87,8 @@ const Register = () => {
                                   className="max-h-[200px] overflow-y-scroll overflow-x-hidden origin-top-right absolute right-[-100px] md:right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
                                 >
                                   <div className="py-1">
-                                    {Object.entries(codes).map((c) => (
-                                      <div className="py-1">
+                                    {Object.entries(codes).map((c, i) => (
+                                      <div className="py-1" key={i}>
                                         <Menu.Item>
                                           {({ active }) => (
                                             <a
