@@ -10,8 +10,42 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model User{
-  id              Int   @id @default(autoincrement())
+model User {
+  id              String         @id @default(cuid())
   firstName       String
   lastName        String
+  email           String         @unique
+  password        String
+  accountNumber   BigInt         @unique
+  hardwareToken   HardwareToken? @relation(fields: [hardwareTokenId], references: [id])
+  hardwareTokenId String
+  amount          String         @unique
+  status          STATUS         @default(NOT_ACTIVE)
+}
+
+model Transaction {
+  id                  String                @id @default(cuid())
+  amount              BigInt
+  UserAndTranscations UserAndTranscations[]
+}
+
+model UserAndTranscations {
+  id            String      @id @default(uuid())
+  transcation   Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String
+  fromUser      BigInt
+  toUser        BigInt
+}
+
+model HardwareToken {
+  id       String @id @default(cuid())
+  tokenId  String @unique
+  isActive STATUS @default(NOT_ACTIVE)
+  User     User?
+}
+
+enum STATUS {
+  BLOCKED
+  NOT_ACTIVE
+  ACTIVE
 }
