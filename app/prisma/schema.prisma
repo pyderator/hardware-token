@@ -16,11 +16,11 @@ model User {
   lastName        String
   email           String         @unique
   password        String
-  contactNumber   BigInt         @unique
-  accountNumber   BigInt         @unique 
+  contactNumber   String         @unique
+  accountNumber   String         @unique 
   hardwareToken   HardwareToken? @relation(fields: [hardwareTokenId], references: [id])
   hardwareTokenId String      
-  amount          BigInt         @unique @default(0)
+  amount          BigInt         @default(0)
   status          STATUS         @default(NOT_ACTIVE)
 }
 
@@ -34,8 +34,8 @@ model UserAndTranscations {
   id            String      @id @default(uuid())
   transcation   Transaction @relation(fields: [transactionId], references: [id])
   transactionId String
-  fromUser      BigInt
-  toUser        BigInt
+  fromUser      String
+  toUser        String
 }
 
 model HardwareToken {

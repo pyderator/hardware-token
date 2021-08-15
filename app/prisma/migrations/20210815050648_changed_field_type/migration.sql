@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "accountNumber" SET DATA TYPE TEXT,
+ALTER COLUMN "contactNumber" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "UserAndTranscations" ALTER COLUMN "fromUser" SET DATA TYPE TEXT,
+ALTER COLUMN "toUser" SET DATA TYPE TEXT;

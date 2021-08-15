@@ -1,9 +1,6 @@
 import { gql } from "apollo-server-micro";
 import { typeDefs as hardwareTypeDefs } from "./HardwareToken/hardwareTokenSchema";
-import { resolvers } from "../resolvers";
-import { mergeResolvers } from "@graphql-tools/merge";
-import { makeExecutableSchema } from "@graphql-tools/schema";
-import { hardwareTokenResolvers } from "../resolvers/HardwareToken/hardwareTokenResolvers";
+import { userTypeDefs } from "./Users/userSchema";
 
 const typeDefs = gql`
   type Query {
@@ -14,4 +11,4 @@ const typeDefs = gql`
   }
 `;
 
-export const rootTypeDefs = [typeDefs, hardwareTypeDefs];
+export const rootTypeDefs = [typeDefs, hardwareTypeDefs, userTypeDefs];
