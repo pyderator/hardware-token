@@ -1,24 +1,13 @@
 import { ApolloServer, gql } from "apollo-server-micro";
-// import { resolvers } from "../../resolvers";
-// import { typeDefs } from "../../schemas";
-const typeDefs = gql`
-  type Query {
-    sayHello: String
-  }
-`;
+import { resolvers } from "../../graphql/resolvers";
+import { rootSchema } from "../../graphql/schema";
 
-const resolvers = {
-  Query: {
-    sayHello() {
-      return "Hello World!";
-    },
-  },
-};
 export const config = {
   api: {
     bodyParser: false,
   },
 };
-const server = new ApolloServer({ typeDefs, resolvers });
+
+const server = new ApolloServer({ schema: rootSchema });
 
 export default server.createHandler({ path: "/api/graphql" });

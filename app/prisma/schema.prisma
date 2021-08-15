@@ -16,10 +16,11 @@ model User {
   lastName        String
   email           String         @unique
   password        String
-  accountNumber   BigInt         @unique
+  contactNumber   BigInt         @unique
+  accountNumber   BigInt         @unique 
   hardwareToken   HardwareToken? @relation(fields: [hardwareTokenId], references: [id])
-  hardwareTokenId String
-  amount          String         @unique
+  hardwareTokenId String      
+  amount          BigInt         @unique @default(0)
   status          STATUS         @default(NOT_ACTIVE)
 }
 
