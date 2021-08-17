@@ -8,12 +8,20 @@ import InputField from "../components/Fields/InputField";
 import { codes } from "../datas/phoneNumberCodes";
 import BaseLayout from "../layouts/baselayout";
 import { H1 } from "../components/Headers/H1";
+import { useAllHardwareTokensQuery } from "../generated/graphql";
+import { useSnackbar } from "notistack";
 
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 const Register = () => {
   const [isAgreed, setIsAgreed] = useState(false);
+  const { data, loading, error } = useAllHardwareTokensQuery();
+  const { enqueueSnackbar } = useSnackbar();
+  console.log("the data is", data);
+  if (data?.getHardwareTokens?.success) {
+    enqueueSnackbar("YOYO");
+  }
   return (
     <BaseLayout>
       <div>

@@ -17,13 +17,13 @@ export const typeDefs = gql`
 
   type TokenResponse {
     data: HardwareToken
-    errors: [Error!]!
+    errors: [Error!]
     success: Boolean!
   }
 
   type TokensResponse {
     data: [HardwareToken!]!
-    errors: [Error!]!
+    errors: [Error!]
     success: Boolean
   }
 

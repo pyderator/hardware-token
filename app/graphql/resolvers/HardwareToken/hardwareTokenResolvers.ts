@@ -46,10 +46,9 @@ export const hardwareTokenResolvers = {
       info: any
     ) => {
       try {
-        if (await checkIfTokenExists(args.id)) {
+        if (await checkIfTokenExists(args.tokenId)) {
           return exceptionErrorResponse("Token already exists");
         }
-
         const hardWareToken = await prismaClient.hardwareToken.create({
           data: {
             tokenId: args.tokenId,

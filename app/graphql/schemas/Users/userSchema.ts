@@ -3,6 +3,16 @@ import { gql } from "apollo-server-micro";
 export const userTypeDefs = gql`
   extend type Query {
     findUser(id: String): UserResponse
+    findAllUsers: UsersResponse
+    checkIfCredsMatches(
+      accountNumber: String
+      password: String
+    ): CheckCredsMatchResponse
+    checkIfTOTPMatches(
+      totpToken: String
+      accountNumber: String
+      password: String
+    ): CheckCredsMatchResponse
   }
 
   extend type Mutation {
@@ -34,7 +44,12 @@ export const userTypeDefs = gql`
 
   type UserResponse {
     data: User
-    errors: [Error!]!
+    errors: [Error!]
+    success: Boolean!
+  }
+  type UsersResponse {
+    data: [User!]
+    errors: [Error!]
     success: Boolean!
   }
 
@@ -44,6 +59,11 @@ export const userTypeDefs = gql`
     success: Boolean!
   }
 
+  type CheckCredsMatchResponse {
+    data: Boolean
+    errors: [Error!]
+    success: Boolean!
+  }
   enum STATUS {
     ACTIVE
     NOT_ACTIVE

@@ -1,0 +1,25 @@
+mutation registerAccount(
+  $firstName: String!
+  $lastName: String!
+  $email: String!
+  $contactNumber: String!
+  $accountNumber: String!
+  $hardwareTokenId: String!
+) {
+  addUser(
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    contactNumber: $contactNumber
+    accountNumber: $accountNumber
+    hardwareTokenId: $hardwareTokenId
+  ) {
+    data {
+      id
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

@@ -3,6 +3,7 @@ import prismaClient from "../../../prisma/client";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import generatePassword from "../../../utils/generatePassword";
 import sendMail from "../../../utils/sendMail";
+import speakeasy from "speakeasy";
 
 interface addUserArgs {
   firstName: string;
@@ -18,20 +19,120 @@ interface registerUserArgs {
   contactNumber: string;
 }
 
+interface checkIfCredsMatches {
+  accountNumber: string;
+  password: string;
+}
+
+interface checkIfTOTPMatches extends checkIfCredsMatches {
+  totpToken: string;
+}
+
 export const userResolver = {
+  Query: {
+    checkIfCredsMatches: async (_: any, args: checkIfCredsMatches) => {
+      try {
+        const user = await prismaClient.user.findUnique({
+          where: {
+            accountNumber: args.accountNumber,
+          },
+        });
+        if (!user || !(await argon2.verify(user?.password, args.password))) {
+          return exceptionErrorResponse(
+            "Account doesn't exists or password isn't valid"
+          );
+        }
+        return {
+          data: true,
+          success: true,
+        };
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse("error while validation credentials");
+      }
+    },
+    checkIfTOTPMatches: async (_: any, args: checkIfTOTPMatches) => {
+      try {
+        const user = await prismaClient.user.findUnique({
+          where: {
+            accountNumber: args.accountNumber,
+          },
+        });
+        console.log("the user is", user);
+        if (!user || !(await argon2.verify(user?.password, args.password))) {
+          return exceptionErrorResponse(
+            "Account doesn't exists or password isn't valid"
+          );
+        }
+        const data = speakeasy.totp.verify({
+          secret: "abcd",
+          algorithm: "sha1",
+          token: args.totpToken,
+        });
+        console.log(args.totpToken);
+        console.log(data);
+        if (
+          speakeasy.totp.verify({
+            secret: "abcd",
+            algorithm: "sha1",
+            token: args.totpToken,
+          })
+        ) {
+          return {
+            success: true,
+            data: true,
+          };
+        }
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse("error while validating totp");
+      }
+    },
+    findAllUsers: async () => {
+      try {
+        const users = await prismaClient.user.findMany({
+          select: {
+            id: true,
+            accountNumber: true,
+            amount: true,
+            contactNumber: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+            hardwareTokenId: true,
+            status: true,
+          },
+        });
+        if (users) {
+          console.log(users);
+          return {
+            data: users,
+            errors: null,
+            success: true,
+          };
+        }
+        return exceptionErrorResponse("error while fetching all users");
+      } catch (e) {
+        return exceptionErrorResponse("error while fetching all users");
+      }
+    },
+  },
   Mutation: {
     addUser: async (_: any, args: addUserArgs) => {
       try {
+        console.log("here");
         const { hardwareTokenId, ...userInfo } = args;
+        //TODO: Add is active check
         const hardwareToken = await prismaClient.hardwareToken.findUnique({
           where: { tokenId: args.hardwareTokenId },
         });
-
+        console.log("hardwareTOken", hardwareToken);
         if (!hardwareToken) {
           return exceptionErrorResponse("No such token");
         }
 
         const password = await generatePassword();
+        console.log(password);
 
         const user = await prismaClient.user.create({
           data: {
@@ -44,7 +145,6 @@ export const userResolver = {
             },
           },
         });
-        console.log(user);
         if (!user) {
           return exceptionErrorResponse(
             "Something went wrong while adding user"
@@ -55,11 +155,11 @@ export const userResolver = {
           success: true,
         };
       } catch (err) {
+        console.log(err);
         return exceptionErrorResponse("Something went wrong while adding user");
       }
     },
     async registerUser(_: any, args: registerUserArgs) {
-      console.log("her");
       try {
         const user = await prismaClient.user.findFirst({
           where: { ...args },
@@ -68,11 +168,12 @@ export const userResolver = {
           return exceptionErrorResponse("No such account exists");
         }
         const password = await generatePassword();
-        console.log("oyo");
+        console.log(password.password);
         const updatedUser = await prismaClient.user.update({
           data: {
             status: "ACTIVE",
             password: password.hashedPassword,
+            isExpired: true,
           },
           where: {
             id: user.id,

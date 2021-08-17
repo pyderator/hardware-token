@@ -20,8 +20,9 @@ model User {
   accountNumber   String         @unique 
   hardwareToken   HardwareToken? @relation(fields: [hardwareTokenId], references: [id])
   hardwareTokenId String      
-  amount          BigInt         @default(0)
+  amount          Int         @default(1000)
   status          STATUS         @default(NOT_ACTIVE)
+  isExpired       Boolean        @default(false)
 }
 
 model Transaction {
