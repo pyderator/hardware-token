@@ -41,7 +41,7 @@ model UserAndTranscations {
 
 model HardwareToken {
   id       String @id @default(cuid())
-  tokenId  String @unique
+  productKey  String @unique
   isActive STATUS @default(NOT_ACTIVE)
   User     User?
 }

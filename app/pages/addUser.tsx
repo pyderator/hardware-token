@@ -13,7 +13,7 @@ import {
 } from "../generated/graphql";
 import BaseLayout from "../layouts/baselayout";
 
-const Login = () => {
+const AddUser = () => {
   const [addUser, { data, loading, error }] = useRegisterAccountMutation();
   return (
     <BaseLayout>
@@ -128,4 +128,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AddUser;

@@ -1,6 +1,7 @@
 import { ApolloServer, gql } from "apollo-server-micro";
 import { rootSchema } from "../../graphql/schema";
 import { config as dotEnvConfig } from "dotenv";
+import { createContext } from "../../graphql/context";
 
 // Configuring env to support local and production as well.
 process.env.NODE_ENV === "development"
@@ -13,6 +14,9 @@ export const config = {
   },
 };
 
-const server = new ApolloServer({ schema: rootSchema });
+const server = new ApolloServer({
+  schema: rootSchema,
+  context: createContext(),
+});
 
 export default server.createHandler({ path: "/api/graphql" });

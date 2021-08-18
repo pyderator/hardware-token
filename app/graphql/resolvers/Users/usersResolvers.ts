@@ -4,6 +4,7 @@ import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import generatePassword from "../../../utils/generatePassword";
 import sendMail from "../../../utils/sendMail";
 import speakeasy from "speakeasy";
+import { Context } from "../../context";
 
 interface addUserArgs {
   firstName: string;
@@ -30,9 +31,13 @@ interface checkIfTOTPMatches extends checkIfCredsMatches {
 
 export const userResolver = {
   Query: {
-    checkIfCredsMatches: async (_: any, args: checkIfCredsMatches) => {
+    checkIfCredsMatches: async (
+      _: any,
+      args: checkIfCredsMatches,
+      context: Context
+    ) => {
       try {
-        const user = await prismaClient.user.findUnique({
+        const user = await context.prisma.user.findUnique({
           where: {
             accountNumber: args.accountNumber,
           },
@@ -51,9 +56,13 @@ export const userResolver = {
         return exceptionErrorResponse("error while validation credentials");
       }
     },
-    checkIfTOTPMatches: async (_: any, args: checkIfTOTPMatches) => {
+    checkIfTOTPMatches: async (
+      _: any,
+      args: checkIfTOTPMatches,
+      context: Context
+    ) => {
       try {
-        const user = await prismaClient.user.findUnique({
+        const user = await context.prisma.user.findUnique({
           where: {
             accountNumber: args.accountNumber,
           },
@@ -88,9 +97,9 @@ export const userResolver = {
         return exceptionErrorResponse("error while validating totp");
       }
     },
-    findAllUsers: async () => {
+    findAllUsers: async (_: any, __: any, context: Context) => {
       try {
-        const users = await prismaClient.user.findMany({
+        const users = await context.prisma.user.findMany({
           select: {
             id: true,
             accountNumber: true,
@@ -118,12 +127,12 @@ export const userResolver = {
     },
   },
   Mutation: {
-    addUser: async (_: any, args: addUserArgs) => {
+    addUser: async (_: any, args: addUserArgs, context: Context) => {
       try {
         console.log("here");
         const { hardwareTokenId, ...userInfo } = args;
         //TODO: Add is active check
-        const hardwareToken = await prismaClient.hardwareToken.findUnique({
+        const hardwareToken = await context.prisma.hardwareToken.findUnique({
           where: { tokenId: args.hardwareTokenId },
         });
         console.log("hardwareTOken", hardwareToken);
@@ -134,7 +143,7 @@ export const userResolver = {
         const password = await generatePassword();
         console.log(password);
 
-        const user = await prismaClient.user.create({
+        const user = await context.prisma.user.create({
           data: {
             ...userInfo,
             password: password.hashedPassword,
@@ -159,9 +168,9 @@ export const userResolver = {
         return exceptionErrorResponse("Something went wrong while adding user");
       }
     },
-    async registerUser(_: any, args: registerUserArgs) {
+    async registerUser(_: any, args: registerUserArgs, context: Context) {
       try {
-        const user = await prismaClient.user.findFirst({
+        const user = await context.prisma.user.findFirst({
           where: { ...args },
         });
         if (!user) {
@@ -169,7 +178,7 @@ export const userResolver = {
         }
         const password = await generatePassword();
         console.log(password.password);
-        const updatedUser = await prismaClient.user.update({
+        const updatedUser = await context.prisma.user.update({
           data: {
             status: "ACTIVE",
             password: password.hashedPassword,
