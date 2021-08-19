@@ -1,10 +1,10 @@
-mutation registerAccount(
+mutation addUser(
   $firstName: String!
   $lastName: String!
   $email: String!
   $contactNumber: String!
   $accountNumber: String!
-  $hardwareTokenId: String!
+  $productKey: String!
 ) {
   addUser(
     firstName: $firstName
@@ -12,10 +12,13 @@ mutation registerAccount(
     email: $email
     contactNumber: $contactNumber
     accountNumber: $accountNumber
-    hardwareTokenId: $hardwareTokenId
+    productKey: $productKey
   ) {
     data {
       id
+      hardwareToken {
+        productKey
+      }
     }
     errors {
       message

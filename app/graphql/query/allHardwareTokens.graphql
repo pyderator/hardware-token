@@ -2,7 +2,7 @@ query allHardwareTokens {
   getHardwareTokens {
     data {
       id
-      tokenId
+      productKey
     }
     errors {
       message

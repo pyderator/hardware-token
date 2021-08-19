@@ -12,7 +12,7 @@ interface addUserArgs {
   email: string;
   contactNumber: string;
   accountNumber: string;
-  hardwareTokenId: string;
+  productKey: string;
 }
 
 interface registerUserArgs {
@@ -109,6 +109,7 @@ export const userResolver = {
             firstName: true,
             lastName: true,
             hardwareTokenId: true,
+            hardwareToken: true,
             status: true,
           },
         });
@@ -130,19 +131,54 @@ export const userResolver = {
     addUser: async (_: any, args: addUserArgs, context: Context) => {
       try {
         console.log("here");
-        const { hardwareTokenId, ...userInfo } = args;
+        const { productKey, ...userInfo } = args;
         //TODO: Add is active check
         const hardwareToken = await context.prisma.hardwareToken.findUnique({
-          where: { tokenId: args.hardwareTokenId },
+          where: { productKey: args.productKey },
         });
         console.log("hardwareTOken", hardwareToken);
         if (!hardwareToken) {
           return exceptionErrorResponse("No such token");
         }
+        // Checking whether some other users are assigned that token
+        const isAssignedToOther = await context.prisma.user.findFirst({
+          where: {
+            hardwareToken: {
+              productKey: args.productKey,
+            },
+          },
+        });
 
+        if (isAssignedToOther) {
+          return exceptionErrorResponse("Already assigned token");
+        }
+
+        // Checking if email matches with someone else
+        const isSomeoneHavingSameEmail = await context.prisma.user.findFirst({
+          where: {
+            email: args.email,
+          },
+        });
+
+        if (isSomeoneHavingSameEmail) {
+          return exceptionErrorResponse("Email already exists");
+        }
+
+        // Checking if contact number matches with someone else
+
+        // Checking if email matches with someone else
+        const isSomeoneHavingSameContactNumber =
+          await context.prisma.user.findFirst({
+            where: {
+              contactNumber: args.contactNumber,
+            },
+          });
+
+        if (isSomeoneHavingSameContactNumber) {
+          return exceptionErrorResponse("Contact Number already exists");
+        }
         const password = await generatePassword();
-        console.log(password);
-
+        console.log("THE HARDWARE TOKEN IS", hardwareToken);
         const user = await context.prisma.user.create({
           data: {
             ...userInfo,

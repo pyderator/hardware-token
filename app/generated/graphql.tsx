@@ -36,7 +36,8 @@ export type Error = {
 export type HardwareToken = {
   __typename?: 'HardwareToken';
   id?: Maybe<Scalars['ID']>;
-  tokenId?: Maybe<Scalars['String']>;
+  productKey?: Maybe<Scalars['String']>;
+  hashArray?: Maybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -49,7 +50,7 @@ export type Mutation = {
 
 
 export type MutationAddHardwareTokenArgs = {
-  tokenId: Scalars['String'];
+  productKey: Scalars['String'];
 };
 
 
@@ -59,7 +60,7 @@ export type MutationAddUserArgs = {
   email: Scalars['String'];
   contactNumber: Scalars['String'];
   accountNumber: Scalars['String'];
-  hardwareTokenId?: Maybe<Scalars['String']>;
+  productKey: Scalars['String'];
 };
 
 
@@ -73,6 +74,7 @@ export type Query = {
   _empty?: Maybe<Scalars['String']>;
   getHardwareToken?: Maybe<TokenResponse>;
   getHardwareTokens?: Maybe<TokensResponse>;
+  getHardwareTokensUnAssigned?: Maybe<TokensResponse>;
   findUser?: Maybe<UserResponse>;
   findAllUsers?: Maybe<UsersResponse>;
   checkIfCredsMatches?: Maybe<CheckCredsMatchResponse>;
@@ -81,7 +83,7 @@ export type Query = {
 
 
 export type QueryGetHardwareTokenArgs = {
-  id: Scalars['String'];
+  productKey: Scalars['String'];
 };
 
 
@@ -111,13 +113,13 @@ export enum Status {
 export type TokenResponse = {
   __typename?: 'TokenResponse';
   data?: Maybe<HardwareToken>;
-  errors: Array<Error>;
+  errors?: Maybe<Array<Error>>;
   success: Scalars['Boolean'];
 };
 
 export type TokensResponse = {
   __typename?: 'TokensResponse';
-  data: Array<HardwareToken>;
+  data?: Maybe<Array<HardwareToken>>;
   errors?: Maybe<Array<Error>>;
   success?: Maybe<Scalars['Boolean']>;
 };
@@ -149,41 +151,48 @@ export type UsersResponse = {
   success: Scalars['Boolean'];
 };
 
-export type RegisterAccountMutationVariables = Exact<{
+export type AddHardwareTokenMutationVariables = Exact<{
+  productKey: Scalars['String'];
+}>;
+
+
+export type AddHardwareTokenMutation = { __typename?: 'Mutation', addHardwareToken?: Maybe<{ __typename?: 'TokenResponse', success: boolean, data?: Maybe<{ __typename?: 'HardwareToken', id?: Maybe<string>, productKey?: Maybe<string>, hashArray?: Maybe<string> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type AddUserMutationVariables = Exact<{
   firstName: Scalars['String'];
   lastName: Scalars['String'];
   email: Scalars['String'];
   contactNumber: Scalars['String'];
   accountNumber: Scalars['String'];
-  hardwareTokenId: Scalars['String'];
+  productKey: Scalars['String'];
 }>;
 
 
-export type RegisterAccountMutation = { __typename?: 'Mutation', addUser?: Maybe<{ __typename?: 'UserResponse', success: boolean, data?: Maybe<{ __typename?: 'User', id?: Maybe<string> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+export type AddUserMutation = { __typename?: 'Mutation', addUser?: Maybe<{ __typename?: 'UserResponse', success: boolean, data?: Maybe<{ __typename?: 'User', id?: Maybe<string>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', productKey?: Maybe<string> }> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 export type AllHardwareTokensQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllHardwareTokensQuery = { __typename?: 'Query', getHardwareTokens?: Maybe<{ __typename?: 'TokensResponse', success?: Maybe<boolean>, data: Array<{ __typename?: 'HardwareToken', id?: Maybe<string>, tokenId?: Maybe<string> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+export type AllHardwareTokensQuery = { __typename?: 'Query', getHardwareTokens?: Maybe<{ __typename?: 'TokensResponse', success?: Maybe<boolean>, data?: Maybe<Array<{ __typename?: 'HardwareToken', id?: Maybe<string>, productKey?: Maybe<string> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type GetNonAssignedHardwareTokensQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetNonAssignedHardwareTokensQuery = { __typename?: 'Query', getHardwareTokensUnAssigned?: Maybe<{ __typename?: 'TokensResponse', data?: Maybe<Array<{ __typename?: 'HardwareToken', productKey?: Maybe<string> }>> }> };
 
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, status?: Maybe<Status>, amount?: Maybe<number>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', tokenId?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, amount?: Maybe<number>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', productKey?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 
-export const RegisterAccountDocument = gql`
-    mutation registerAccount($firstName: String!, $lastName: String!, $email: String!, $contactNumber: String!, $accountNumber: String!, $hardwareTokenId: String!) {
-  addUser(
-    firstName: $firstName
-    lastName: $lastName
-    email: $email
-    contactNumber: $contactNumber
-    accountNumber: $accountNumber
-    hardwareTokenId: $hardwareTokenId
-  ) {
+export const AddHardwareTokenDocument = gql`
+    mutation AddHardwareToken($productKey: String!) {
+  addHardwareToken(productKey: $productKey) {
     data {
       id
+      productKey
+      hashArray
     }
     errors {
       message
@@ -192,43 +201,92 @@ export const RegisterAccountDocument = gql`
   }
 }
     `;
-export type RegisterAccountMutationFn = Apollo.MutationFunction<RegisterAccountMutation, RegisterAccountMutationVariables>;
+export type AddHardwareTokenMutationFn = Apollo.MutationFunction<AddHardwareTokenMutation, AddHardwareTokenMutationVariables>;
 
 /**
- * __useRegisterAccountMutation__
+ * __useAddHardwareTokenMutation__
  *
- * To run a mutation, you first call `useRegisterAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRegisterAccountMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useAddHardwareTokenMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddHardwareTokenMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [registerAccountMutation, { data, loading, error }] = useRegisterAccountMutation({
+ * const [addHardwareTokenMutation, { data, loading, error }] = useAddHardwareTokenMutation({
+ *   variables: {
+ *      productKey: // value for 'productKey'
+ *   },
+ * });
+ */
+export function useAddHardwareTokenMutation(baseOptions?: Apollo.MutationHookOptions<AddHardwareTokenMutation, AddHardwareTokenMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddHardwareTokenMutation, AddHardwareTokenMutationVariables>(AddHardwareTokenDocument, options);
+      }
+export type AddHardwareTokenMutationHookResult = ReturnType<typeof useAddHardwareTokenMutation>;
+export type AddHardwareTokenMutationResult = Apollo.MutationResult<AddHardwareTokenMutation>;
+export type AddHardwareTokenMutationOptions = Apollo.BaseMutationOptions<AddHardwareTokenMutation, AddHardwareTokenMutationVariables>;
+export const AddUserDocument = gql`
+    mutation addUser($firstName: String!, $lastName: String!, $email: String!, $contactNumber: String!, $accountNumber: String!, $productKey: String!) {
+  addUser(
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    contactNumber: $contactNumber
+    accountNumber: $accountNumber
+    productKey: $productKey
+  ) {
+    data {
+      id
+      hardwareToken {
+        productKey
+      }
+    }
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+export type AddUserMutationFn = Apollo.MutationFunction<AddUserMutation, AddUserMutationVariables>;
+
+/**
+ * __useAddUserMutation__
+ *
+ * To run a mutation, you first call `useAddUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addUserMutation, { data, loading, error }] = useAddUserMutation({
  *   variables: {
  *      firstName: // value for 'firstName'
  *      lastName: // value for 'lastName'
  *      email: // value for 'email'
  *      contactNumber: // value for 'contactNumber'
  *      accountNumber: // value for 'accountNumber'
- *      hardwareTokenId: // value for 'hardwareTokenId'
+ *      productKey: // value for 'productKey'
  *   },
  * });
  */
-export function useRegisterAccountMutation(baseOptions?: Apollo.MutationHookOptions<RegisterAccountMutation, RegisterAccountMutationVariables>) {
+export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddUserMutation, AddUserMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RegisterAccountMutation, RegisterAccountMutationVariables>(RegisterAccountDocument, options);
+        return Apollo.useMutation<AddUserMutation, AddUserMutationVariables>(AddUserDocument, options);
       }
-export type RegisterAccountMutationHookResult = ReturnType<typeof useRegisterAccountMutation>;
-export type RegisterAccountMutationResult = Apollo.MutationResult<RegisterAccountMutation>;
-export type RegisterAccountMutationOptions = Apollo.BaseMutationOptions<RegisterAccountMutation, RegisterAccountMutationVariables>;
+export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
+export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
+export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
 export const AllHardwareTokensDocument = gql`
     query allHardwareTokens {
   getHardwareTokens {
     data {
       id
-      tokenId
+      productKey
     }
     errors {
       message
@@ -264,6 +322,42 @@ export function useAllHardwareTokensLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type AllHardwareTokensQueryHookResult = ReturnType<typeof useAllHardwareTokensQuery>;
 export type AllHardwareTokensLazyQueryHookResult = ReturnType<typeof useAllHardwareTokensLazyQuery>;
 export type AllHardwareTokensQueryResult = Apollo.QueryResult<AllHardwareTokensQuery, AllHardwareTokensQueryVariables>;
+export const GetNonAssignedHardwareTokensDocument = gql`
+    query getNonAssignedHardwareTokens {
+  getHardwareTokensUnAssigned {
+    data {
+      productKey
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetNonAssignedHardwareTokensQuery__
+ *
+ * To run a query within a React component, call `useGetNonAssignedHardwareTokensQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNonAssignedHardwareTokensQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNonAssignedHardwareTokensQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetNonAssignedHardwareTokensQuery(baseOptions?: Apollo.QueryHookOptions<GetNonAssignedHardwareTokensQuery, GetNonAssignedHardwareTokensQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetNonAssignedHardwareTokensQuery, GetNonAssignedHardwareTokensQueryVariables>(GetNonAssignedHardwareTokensDocument, options);
+      }
+export function useGetNonAssignedHardwareTokensLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetNonAssignedHardwareTokensQuery, GetNonAssignedHardwareTokensQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetNonAssignedHardwareTokensQuery, GetNonAssignedHardwareTokensQueryVariables>(GetNonAssignedHardwareTokensDocument, options);
+        }
+export type GetNonAssignedHardwareTokensQueryHookResult = ReturnType<typeof useGetNonAssignedHardwareTokensQuery>;
+export type GetNonAssignedHardwareTokensLazyQueryHookResult = ReturnType<typeof useGetNonAssignedHardwareTokensLazyQuery>;
+export type GetNonAssignedHardwareTokensQueryResult = Apollo.QueryResult<GetNonAssignedHardwareTokensQuery, GetNonAssignedHardwareTokensQueryVariables>;
 export const AllUsersDocument = gql`
     query AllUsers {
   findAllUsers {
@@ -274,9 +368,8 @@ export const AllUsersDocument = gql`
       email
       contactNumber
       accountNumber
-      status
       hardwareToken {
-        tokenId
+        productKey
       }
       amount
     }

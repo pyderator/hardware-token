@@ -43,6 +43,7 @@ model HardwareToken {
   id       String @id @default(cuid())
   productKey  String @unique
   isActive STATUS @default(NOT_ACTIVE)
+  hash  String
   User     User?
 }
 

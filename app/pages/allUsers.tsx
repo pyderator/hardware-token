@@ -1,29 +1,15 @@
-import React from "react";
-import { Form, Formik } from "formik";
-import Head from "next/head";
-import Link from "next/link";
-import { useState } from "react";
-import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai/";
-import InputField from "../components/Fields/InputField";
-import { H1 } from "../components/Headers/H1";
-import BaseLayout from "../layouts/baselayout";
-import { makeStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import {
-  AllUsersQuery,
-  AllUsersQueryHookResult,
-  Exact,
-  useAllUsersQuery,
-} from "../generated/graphql";
-import { gql } from "apollo-server-micro";
-import client from "../utils/apollo-client";
-import { QueryResult } from "@apollo/client";
+import Head from "next/head";
+import React from "react";
+import { H1 } from "../components/Headers/H1";
+import { useAllUsersQuery } from "../generated/graphql";
+import BaseLayout from "../layouts/baselayout";
 
 const AllUsers = () => {
   const { data, loading } = useAllUsersQuery();
@@ -89,8 +75,8 @@ const AllUsers = () => {
                             <TableCell align="center">{user.amount}</TableCell>
                             <TableCell align="center">{user.status}</TableCell>
                             <TableCell align="center">
-                              {user.hardwareToken
-                                ? user.hardwareToken
+                              {user.productKey
+                                ? user.productKey
                                 : "Not allotted yet"}
                             </TableCell>
                             {/* <TableCell align="center">{user.}</TableCell>

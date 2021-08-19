@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import prismaClient from "../../../prisma/client";
+import argon2 from "argon2";
+import { createHexArray } from "../../../utils/createHexArray";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import { Context } from "../../context";
 import { checkIfTokenExists } from "./utils/checkIfTokenExists";
@@ -8,7 +8,7 @@ export const hardwareTokenResolvers = {
   Query: {
     async getHardwareToken(_: any, args: any, context: Context) {
       try {
-        const token = await checkIfTokenExists(args.id);
+        const token = await checkIfTokenExists(args.productKey);
         if (!token) {
           return exceptionErrorResponse("No such token");
         }
@@ -21,10 +21,31 @@ export const hardwareTokenResolvers = {
       }
     },
 
-    // Returns all the avaliable hardware tokens
+    // Returns all  hardware tokens
     async getHardwareTokens(_: any, __: any, context: Context) {
       try {
         const tokens = await context.prisma.hardwareToken.findMany();
+        if (tokens) {
+          return {
+            data: tokens,
+            success: true,
+          };
+        }
+        throw new Error();
+      } catch (e) {
+        return exceptionErrorResponse("Something went wrong");
+      }
+    },
+
+    // Return all avaliable hardware tokens
+    async getHardwareTokensUnAssigned(_: any, __: any, context: Context) {
+      try {
+        const tokens = await context.prisma.hardwareToken.findMany({
+          where: {
+            User: null,
+          },
+        });
+
         if (tokens) {
           return {
             data: tokens,
@@ -51,14 +72,22 @@ export const hardwareTokenResolvers = {
         if (await checkIfTokenExists(args.productKey)) {
           return exceptionErrorResponse("Token already exists");
         }
+        console.log(process.env.SECRET_KEY);
+        const hash = await argon2.hash(
+          args.productKey + process.env.SECRET_KEY
+        );
+        const hashArray = createHexArray(hash);
+
         const hardWareToken = await context.prisma.hardwareToken.create({
           data: {
-            tokenId: args.tokenId,
+            productKey: args.productKey,
+            hash,
           },
         });
+
         if (hardWareToken) {
           return {
-            data: hardWareToken,
+            data: { ...hardWareToken, hashArray },
             success: true,
           };
         } else {

@@ -23,7 +23,7 @@ const Login = () => {
         <main className="h-screen">
           {/* Login Div */}
           <div className="flex align-center justify-center">
-            <div className="h-full bg-white w-full md:min-w-[400px] max-w-[400px]">
+            <div className="h-full bg-white w-full md:min-w-[400px] max-w-[600px]">
               <div className="text-center">
                 <H1>Login</H1>
               </div>

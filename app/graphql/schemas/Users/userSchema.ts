@@ -22,7 +22,7 @@ export const userTypeDefs = gql`
       email: String!
       contactNumber: String!
       accountNumber: String!
-      hardwareTokenId: String
+      productKey: String!
     ): UserResponse
     registerUser(
       accountNumber: String!
@@ -37,6 +37,7 @@ export const userTypeDefs = gql`
     email: String
     contactNumber: String
     accountNumber: String
+    hardwareTokenId: String
     hardwareToken: HardwareToken
     amount: Int
     status: STATUS

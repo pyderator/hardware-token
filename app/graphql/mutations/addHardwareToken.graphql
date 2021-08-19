@@ -1,0 +1,13 @@
+mutation AddHardwareToken($productKey: String!) {
+  addHardwareToken(productKey: $productKey) {
+    data {
+      id
+      productKey
+      hashArray
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

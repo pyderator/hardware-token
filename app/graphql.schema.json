@@ -191,7 +191,19 @@
             "deprecationReason": null
           },
           {
-            "name": "tokenId",
+            "name": "productKey",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "hashArray",
             "description": null,
             "args": [],
             "type": {
@@ -240,7 +252,7 @@
             "description": null,
             "args": [
               {
-                "name": "tokenId",
+                "name": "productKey",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -349,12 +361,16 @@
                 "deprecationReason": null
               },
               {
-                "name": "hardwareTokenId",
+                "name": "productKey",
                 "description": null,
                 "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -442,7 +458,7 @@
             "description": null,
             "args": [
               {
-                "name": "id",
+                "name": "productKey",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -468,6 +484,18 @@
           },
           {
             "name": "getHardwareTokens",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "TokensResponse",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "getHardwareTokensUnAssigned",
             "description": null,
             "args": [],
             "type": {
@@ -658,19 +686,15 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
+              "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "LIST",
+                "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "Error",
-                    "ofType": null
-                  }
+                  "kind": "OBJECT",
+                  "name": "Error",
+                  "ofType": null
                 }
               }
             },
@@ -709,19 +733,15 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
+              "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "LIST",
+                "kind": "NON_NULL",
                 "name": null,
                 "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "HardwareToken",
-                    "ofType": null
-                  }
+                  "kind": "OBJECT",
+                  "name": "HardwareToken",
+                  "ofType": null
                 }
               }
             },

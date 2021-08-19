@@ -1,8 +1,8 @@
 import prismaClient from "../../../../prisma/client";
 
-export const checkIfTokenExists = async (id: string) => {
+export const checkIfTokenExists = async (productKey: string) => {
   const token = await prismaClient.hardwareToken.findFirst({
-    where: { tokenId: id },
+    where: { productKey },
   });
   return token ? token : false;
 };

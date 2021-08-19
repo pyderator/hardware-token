@@ -2,17 +2,19 @@ import { gql } from "apollo-server-micro";
 
 export const typeDefs = gql`
   extend type Query {
-    getHardwareToken(id: String!): TokenResponse
+    getHardwareToken(productKey: String!): TokenResponse
     getHardwareTokens: TokensResponse
+    getHardwareTokensUnAssigned: TokensResponse
   }
 
   type HardwareToken {
     id: ID
-    tokenId: String
+    productKey: String
+    hashArray: String
   }
 
   extend type Mutation {
-    addHardwareToken(tokenId: String!): TokenResponse
+    addHardwareToken(productKey: String!): TokenResponse
   }
 
   type TokenResponse {
@@ -22,7 +24,7 @@ export const typeDefs = gql`
   }
 
   type TokensResponse {
-    data: [HardwareToken!]!
+    data: [HardwareToken!]
     errors: [Error!]
     success: Boolean
   }

@@ -7,9 +7,8 @@ query AllUsers {
       email
       contactNumber
       accountNumber
-      status
       hardwareToken {
-        tokenId
+        productKey
       }
       amount
     }
