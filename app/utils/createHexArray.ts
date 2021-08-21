@@ -1,3 +1,5 @@
+import { STATUS } from "@prisma/client";
+
 export const createHexArray = (secret: string) => {
   var char_array = secret.split("");
   var charcode_array = char_array.map(function (c) {
@@ -10,4 +12,19 @@ export const createHexArray = (secret: string) => {
   }
   hex_array += "}";
   return hex_array;
+};
+
+export const generateHexArrays = (
+  secrets: Array<{
+    id: string;
+    productKey: string;
+    isActive: STATUS;
+    hash: string;
+  }>
+) => {
+  const hexSecrets: Array<{ id: string; hexArray: string }> = [];
+  secrets.map((h) =>
+    hexSecrets.push({ id: h.id, hexArray: createHexArray(h.hash) })
+  );
+  return hexSecrets;
 };

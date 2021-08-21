@@ -132,6 +132,7 @@ export type User = {
   email?: Maybe<Scalars['String']>;
   contactNumber?: Maybe<Scalars['String']>;
   accountNumber?: Maybe<Scalars['String']>;
+  hardwareTokenId?: Maybe<Scalars['String']>;
   hardwareToken?: Maybe<HardwareToken>;
   amount?: Maybe<Scalars['Int']>;
   status?: Maybe<Status>;
@@ -183,7 +184,7 @@ export type GetNonAssignedHardwareTokensQuery = { __typename?: 'Query', getHardw
 export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, amount?: Maybe<number>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', productKey?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, hardwareTokenId?: Maybe<string>, amount?: Maybe<number>, status?: Maybe<Status>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', id?: Maybe<string>, productKey?: Maybe<string>, hashArray?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 
 export const AddHardwareTokenDocument = gql`
@@ -368,10 +369,14 @@ export const AllUsersDocument = gql`
       email
       contactNumber
       accountNumber
+      hardwareTokenId
       hardwareToken {
+        id
         productKey
+        hashArray
       }
       amount
+      status
     }
     errors {
       message

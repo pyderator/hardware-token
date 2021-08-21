@@ -7,10 +7,14 @@ query AllUsers {
       email
       contactNumber
       accountNumber
+      hardwareTokenId
       hardwareToken {
+        id
         productKey
+        hashArray
       }
       amount
+      status
     }
     errors {
       message

@@ -1,9 +1,11 @@
+import { STATUS } from "@prisma/client";
 import argon2 from "argon2";
 import { HardwareToken } from "../../../generated/graphql";
 import { createHexArray } from "../../../utils/createHexArray";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import { Context } from "../../context";
 import { checkIfTokenExists } from "./utils/checkIfTokenExists";
+import Dataloader from "dataloader";
 
 export const hardwareTokenResolvers = {
   Query: {
@@ -100,11 +102,19 @@ export const hardwareTokenResolvers = {
     },
   },
   HardwareToken: {
-    hashArray: (a: { hash: string }) => {
-      if (a.hash) {
-        return createHexArray(a.hash);
+    hashArray: async (
+      parent: {
+        id: string;
+        productKey: string;
+        isActive: STATUS;
+        hash: string;
+      },
+      __: any,
+      context: {
+        createHexLoader: Dataloader<unknown, string | undefined, unknown>;
       }
-      return undefined;
+    ) => {
+      return await context.createHexLoader.load(parent);
     },
   },
 };

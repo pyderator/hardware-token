@@ -67,7 +67,6 @@ export const userResolver = {
             accountNumber: args.accountNumber,
           },
         });
-        console.log("the user is", user);
         if (!user || !(await argon2.verify(user?.password, args.password))) {
           return exceptionErrorResponse(
             "Account doesn't exists or password isn't valid"
@@ -78,8 +77,6 @@ export const userResolver = {
           algorithm: "sha1",
           token: args.totpToken,
         });
-        console.log(args.totpToken);
-        console.log(data);
         if (
           speakeasy.totp.verify({
             secret: "abcd",
@@ -114,7 +111,6 @@ export const userResolver = {
           },
         });
         if (users) {
-          console.log(users);
           return {
             data: users,
             errors: null,

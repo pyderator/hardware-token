@@ -75,13 +75,10 @@ const AllUsers = () => {
                             <TableCell align="center">{user.amount}</TableCell>
                             <TableCell align="center">{user.status}</TableCell>
                             <TableCell align="center">
-                              {user.productKey
-                                ? user.productKey
+                              {user.hardwareToken?.productKey
+                                ? user.hardwareToken.productKey
                                 : "Not allotted yet"}
                             </TableCell>
-                            {/* <TableCell align="center">{user.}</TableCell>
-                            <TableCell align="center">{row.carbs}</TableCell>
-                            <TableCell align="center">{row.protein}</TableCell> */}
                           </TableRow>
                         ))}
                     </TableBody>
