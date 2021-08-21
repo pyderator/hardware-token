@@ -1,0 +1,9 @@
+mutation registerUser($accountNumber: String!, $contactNumber: String!) {
+  registerUser(accountNumber: $accountNumber, contactNumber: $contactNumber) {
+    data
+    errors {
+      message
+    }
+    success
+  }
+}

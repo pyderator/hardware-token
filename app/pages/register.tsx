@@ -3,12 +3,15 @@ import { ChevronDownIcon } from "@heroicons/react/solid";
 import { Form, Formik } from "formik";
 import Head from "next/head";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import InputField from "../components/Fields/InputField";
 import { codes } from "../datas/phoneNumberCodes";
 import BaseLayout from "../layouts/baselayout";
 import { H1 } from "../components/Headers/H1";
-import { useAllHardwareTokensQuery } from "../generated/graphql";
+import {
+  useAllHardwareTokensQuery,
+  useRegisterUserMutation,
+} from "../generated/graphql";
 import { useSnackbar } from "notistack";
 
 function classNames(...classes: any) {
@@ -17,11 +20,18 @@ function classNames(...classes: any) {
 const Register = () => {
   const [isAgreed, setIsAgreed] = useState(false);
   const { data, loading, error } = useAllHardwareTokensQuery();
+  const [
+    registerUser,
+    { data: registerData, loading: registerLoading, error: registerError },
+  ] = useRegisterUserMutation();
   const { enqueueSnackbar } = useSnackbar();
-  console.log("the data is", data);
-  if (data?.getHardwareTokens?.success) {
-    enqueueSnackbar("YOYO");
-  }
+  useEffect(() => {
+    if (!loading && !data?.getHardwareTokens?.success) {
+      enqueueSnackbar("Error loading product keys", {
+        variant: "error",
+      });
+    }
+  }, [data, loading, enqueueSnackbar]);
   return (
     <BaseLayout>
       <div>
@@ -37,7 +47,7 @@ const Register = () => {
                 <p className="text-sm font-bold text-gray-500 mr-2">
                   Already have an Account ?
                 </p>
-                <Link href="/login">
+                <Link href="/login" passHref>
                   <p className="text-sm font-bold text-blue-600 cursor-pointer">
                     Sign in
                   </p>
@@ -47,10 +57,29 @@ const Register = () => {
                 <Formik
                   initialValues={{
                     accountNumber: "",
-                    mobileNumber: "",
+                    contactNumber: "",
                     countryCode: "NP +977",
                   }}
-                  onSubmit={(e) => console.log(e)}
+                  onSubmit={async (e) => {
+                    const { countryCode, ...variables } = e;
+                    const { data, errors, context } = await registerUser({
+                      variables,
+                    });
+                    if (data?.registerUser?.success) {
+                      enqueueSnackbar(
+                        "Account registered successfully. Please check your email",
+                        {
+                          variant: "success",
+                        }
+                      );
+                      return;
+                    } else if (!data?.registerUser?.success)
+                      data?.registerUser?.errors?.forEach((e) => {
+                        enqueueSnackbar(e.message, {
+                          variant: "error",
+                        });
+                      });
+                  }}
                 >
                   {({ values, setFieldValue }) => (
                     <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
@@ -127,11 +156,11 @@ const Register = () => {
                           )}
                         </Menu>
                         <InputField
-                          id="mobileNumber"
+                          id="contactNumber"
                           type="text"
-                          name="mobileNumber"
-                          label="Mobile Number"
-                          placeholder="Enter your account associated mobile number"
+                          name="contactNumber"
+                          label="contact Number"
+                          placeholder="Enter your account associated contact number"
                         />
                       </div>
                       <div className="flex items-center">

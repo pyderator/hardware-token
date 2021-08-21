@@ -14,12 +14,11 @@ const sendMail = async ({
   // Only needed if you don't have a real mail account for testing
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
-    host: "smtp.ethereal.email",
-    port: 587,
+    service: "gmail",
     secure: false, // true for 465, false for other ports
     auth: {
-      user: process.env.ETHERAL_USERNAME, // generated ethereal user
-      pass: process.env.ETHERAL_PASSWORD, // generated ethereal password
+      user: process.env.GMAIL_USERNAME, // generated ethereal user
+      pass: process.env.GMAIL_PASSWORD, // generated ethereal password
     },
   });
 

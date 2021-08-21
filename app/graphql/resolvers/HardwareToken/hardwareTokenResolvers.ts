@@ -74,7 +74,6 @@ export const hardwareTokenResolvers = {
         if (await checkIfTokenExists(args.productKey)) {
           return exceptionErrorResponse("Token already exists");
         }
-        console.log(process.env.SECRET_KEY);
         const hash = await argon2.hash(
           args.productKey + process.env.SECRET_KEY
         );

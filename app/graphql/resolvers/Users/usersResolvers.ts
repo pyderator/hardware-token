@@ -174,7 +174,6 @@ export const userResolver = {
           return exceptionErrorResponse("Contact Number already exists");
         }
         const password = await generatePassword();
-        console.log("THE HARDWARE TOKEN IS", hardwareToken);
         const user = await context.prisma.user.create({
           data: {
             ...userInfo,
@@ -203,13 +202,19 @@ export const userResolver = {
     async registerUser(_: any, args: registerUserArgs, context: Context) {
       try {
         const user = await context.prisma.user.findFirst({
-          where: { ...args },
+          where: {
+            ...args,
+            status: {
+              in: ["BLOCKED", "NOT_ACTIVE"],
+            }, // To check whether the user has already activated his/her account
+          },
         });
         if (!user) {
-          return exceptionErrorResponse("No such account exists");
+          return exceptionErrorResponse(
+            "No such account exists or check your email"
+          );
         }
         const password = await generatePassword();
-        console.log(password.password);
         const updatedUser = await context.prisma.user.update({
           data: {
             status: "ACTIVE",
@@ -231,6 +236,7 @@ export const userResolver = {
           username: user.accountNumber,
         });
         return {
+          data: true,
           success: true,
         };
       } catch (err) {
