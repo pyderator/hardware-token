@@ -1,4 +1,5 @@
 import argon2 from "argon2";
+import { HardwareToken } from "../../../generated/graphql";
 import { createHexArray } from "../../../utils/createHexArray";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import { Context } from "../../context";
@@ -96,6 +97,14 @@ export const hardwareTokenResolvers = {
       } catch (e) {
         return exceptionErrorResponse("Something went wrong");
       }
+    },
+  },
+  HardwareToken: {
+    hashArray: (a: { hash: string }) => {
+      if (a.hash) {
+        return createHexArray(a.hash);
+      }
+      return undefined;
     },
   },
 };
