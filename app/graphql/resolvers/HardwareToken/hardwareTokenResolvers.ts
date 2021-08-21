@@ -1,6 +1,5 @@
 import { STATUS } from "@prisma/client";
 import argon2 from "argon2";
-import { HardwareToken } from "../../../generated/graphql";
 import { createHexArray } from "../../../utils/createHexArray";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import { Context } from "../../context";
@@ -114,6 +113,7 @@ export const hardwareTokenResolvers = {
         createHexLoader: Dataloader<unknown, string | undefined, unknown>;
       }
     ) => {
+      // return createHexArray(parent.hash);
       return await context.createHexLoader.load(parent);
     },
   },
