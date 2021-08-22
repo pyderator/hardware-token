@@ -4,6 +4,7 @@ export const userTypeDefs = gql`
   extend type Query {
     findUser(id: String): UserResponse
     findAllUsers: UsersResponse
+    loggedInUser: LoggedInUser
   }
 
   extend type Mutation {
@@ -30,6 +31,17 @@ export const userTypeDefs = gql`
     ): CheckCredsMatchResponse
   }
 
+  type LoggedInUser {
+    data: LoggedInUserData
+    errors: [Error!]
+    success: Boolean
+  }
+
+  type LoggedInUserData {
+    id: ID
+    isPasswordExpired: Boolean
+  }
+
   type User {
     id: String
     firstName: String
@@ -48,6 +60,7 @@ export const userTypeDefs = gql`
     errors: [Error!]
     success: Boolean!
   }
+
   type UsersResponse {
     data: [User!]
     errors: [Error!]
@@ -65,6 +78,7 @@ export const userTypeDefs = gql`
     errors: [Error!]
     success: Boolean!
   }
+
   enum STATUS {
     ACTIVE
     NOT_ACTIVE

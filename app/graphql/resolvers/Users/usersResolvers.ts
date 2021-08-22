@@ -1,8 +1,9 @@
 import argon2 from "argon2";
+import speakeasy from "speakeasy";
+import jwt from "jsonwebtoken";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import generatePassword from "../../../utils/generatePassword";
 import sendMail from "../../../utils/sendMail";
-import speakeasy from "speakeasy";
 import { Context } from "../../context";
 
 interface addUserArgs {
@@ -57,6 +58,37 @@ export const userResolver = {
       } catch (e) {
         return exceptionErrorResponse("error while fetching all users");
       }
+    },
+    loggedInUser: async (_: any, __: any, context: Context) => {
+      if (context.authUser.success) {
+        const user = await context.prisma.user.findUnique({
+          where: {
+            id: context.authUser.data.id,
+          },
+        });
+        if (!user) {
+          return {
+            success: false,
+            errors: [
+              {
+                message: "User not logged in",
+              },
+            ],
+          };
+        }
+        return {
+          success: true,
+          data: { id: user.id, isPasswordExpired: user.isExpired },
+        };
+      }
+      return {
+        success: false,
+        errors: [
+          {
+            message: "User not logged in",
+          },
+        ],
+      };
     },
   },
   Mutation: {
@@ -197,6 +229,14 @@ export const userResolver = {
             "Account doesn't exists or password isn't valid"
           );
         }
+        // Generating and setting cookie
+        const token = jwt.sign(
+          {
+            id: user.id,
+          },
+          process.env.JWT_SECRET!
+        );
+        context.res.cookie("qid", token);
         return {
           data: true,
           success: true,

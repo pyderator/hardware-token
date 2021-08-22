@@ -1,9 +1,9 @@
 import { ApolloServer } from "apollo-server-micro";
-import Dataloader from "dataloader";
 import { config as dotEnvConfig } from "dotenv";
-import { batchHashes } from "../../batches/hashLoader";
+import { NextApiRequest, NextApiResponse } from "next";
 import { createContext } from "../../graphql/context";
 import { rootSchema } from "../../graphql/schema";
+import cookies from "../../utils/cookies";
 
 // Configuring env to support local and production as well.
 process.env.NODE_ENV === "development"
@@ -18,11 +18,11 @@ export const config = {
 
 // Context
 
-const context = createContext();
+// const context = createContext();
 
 export const server = new ApolloServer({
   schema: rootSchema,
-  context,
+  context: createContext,
 });
 
-export default server.createHandler({ path: "/api/graphql" });
+export default cookies(server.createHandler({ path: "/api/graphql" }));
