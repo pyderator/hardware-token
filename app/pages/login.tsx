@@ -1,19 +1,21 @@
-import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
 import { Form, Formik } from "formik";
 import Head from "next/head";
 import Link from "next/link";
-import { Fragment, useState } from "react";
-import InputField from "../components/Fields/InputField";
-import { codes } from "../datas/phoneNumberCodes";
-import BaseLayout from "../layouts/baselayout";
-import { H1 } from "../components/Headers/H1";
+import { useSnackbar } from "notistack";
+import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai/";
+import InputField from "../components/Fields/InputField";
+import { H1 } from "../components/Headers/H1";
+import { useCheckIfCredsMatchesMutation } from "../generated/graphql";
+import BaseLayout from "../layouts/baselayout";
 function classNames(...classes: any) {
   return classes.filter(Boolean).join(" ");
 }
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [executeCheckIfCredsMatches] = useCheckIfCredsMatchesMutation();
+
+  const { enqueueSnackbar } = useSnackbar();
   return (
     <BaseLayout>
       <div>
@@ -30,19 +32,36 @@ const Login = () => {
               <div className="mt-6">
                 <Formik
                   initialValues={{
-                    username: "",
+                    accountNumber: "",
                     password: "",
                   }}
-                  onSubmit={(e) => console.log(e)}
+                  onSubmit={async (e, { setSubmitting }) => {
+                    setSubmitting(true);
+                    const { data, errors } = await executeCheckIfCredsMatches({
+                      variables: e,
+                    });
+                    console.log(data);
+
+                    if (data?.checkIfCredsMatches?.data) {
+                      enqueueSnackbar("Creds Matches", {
+                        variant: "success",
+                      });
+                    }
+                    if (data?.checkIfCredsMatches?.errors) {
+                      data.checkIfCredsMatches.errors.map((e) =>
+                        enqueueSnackbar(e.message, { variant: "error" })
+                      );
+                    }
+                  }}
                 >
-                  {({ values, setFieldValue }) => (
+                  {({ values, setFieldValue, isSubmitting }) => (
                     <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
                       <InputField
-                        id="username"
+                        id="accountNumber"
                         type="text"
-                        name="username"
-                        label="Username"
-                        placeholder="Enter your username"
+                        name="accountNumber"
+                        label="Account Number"
+                        placeholder="Enter your account number"
                       />
                       <div className="relative">
                         <InputField
@@ -67,15 +86,20 @@ const Login = () => {
                         <p className="text-sm font-bold text-gray-500 mr-2">
                           {` Don't have an account ?`}
                         </p>
-                        <Link href="/register">
-                          <p className="text-sm font-bold text-blue-600 cursor-pointer">
+                        <Link href="/register" passHref>
+                          <p className="text-sm  font-bold text-blue-600 cursor-pointer">
                             Sign up
                           </p>
                         </Link>
                       </div>
                       <button
                         type="submit"
-                        className={`${"border-blue-400 hover:bg-blue-600"} border-[1.2px] rounded-md text-sm text-gray-700 font-regular p-2 hover:text-white`}
+                        disabled={isSubmitting}
+                        className={`${
+                          isSubmitting
+                            ? "cursor-not-allowed hover:bg-red-600 hover:border-red-500"
+                            : "border-blue-400 hover:bg-blue-600"
+                        } border-[1.2px] rounded-md text-sm text-gray-700 font-regular p-2 hover:text-white`}
                       >
                         Login
                       </button>

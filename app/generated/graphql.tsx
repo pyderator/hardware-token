@@ -46,6 +46,8 @@ export type Mutation = {
   addHardwareToken?: Maybe<TokenResponse>;
   addUser?: Maybe<UserResponse>;
   registerUser?: Maybe<AddUserResponse>;
+  checkIfCredsMatches?: Maybe<CheckCredsMatchResponse>;
+  checkIfTOTPMatches?: Maybe<CheckCredsMatchResponse>;
 };
 
 
@@ -69,6 +71,19 @@ export type MutationRegisterUserArgs = {
   contactNumber: Scalars['String'];
 };
 
+
+export type MutationCheckIfCredsMatchesArgs = {
+  accountNumber?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+};
+
+
+export type MutationCheckIfTotpMatchesArgs = {
+  totpToken?: Maybe<Scalars['String']>;
+  accountNumber?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
@@ -77,8 +92,6 @@ export type Query = {
   getHardwareTokensUnAssigned?: Maybe<TokensResponse>;
   findUser?: Maybe<UserResponse>;
   findAllUsers?: Maybe<UsersResponse>;
-  checkIfCredsMatches?: Maybe<CheckCredsMatchResponse>;
-  checkIfTOTPMatches?: Maybe<CheckCredsMatchResponse>;
 };
 
 
@@ -89,19 +102,6 @@ export type QueryGetHardwareTokenArgs = {
 
 export type QueryFindUserArgs = {
   id?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryCheckIfCredsMatchesArgs = {
-  accountNumber?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
-};
-
-
-export type QueryCheckIfTotpMatchesArgs = {
-  totpToken?: Maybe<Scalars['String']>;
-  accountNumber?: Maybe<Scalars['String']>;
-  password?: Maybe<Scalars['String']>;
 };
 
 export enum Status {
@@ -193,6 +193,23 @@ export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, hardwareTokenId?: Maybe<string>, amount?: Maybe<number>, status?: Maybe<Status>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', id?: Maybe<string>, productKey?: Maybe<string>, hashArray?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type CheckIfCredsMatchesMutationVariables = Exact<{
+  accountNumber: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type CheckIfCredsMatchesMutation = { __typename?: 'Mutation', checkIfCredsMatches?: Maybe<{ __typename?: 'CheckCredsMatchResponse', data?: Maybe<boolean>, success: boolean, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type CheckIfTotpMatchesMutationVariables = Exact<{
+  accountNumber: Scalars['String'];
+  password: Scalars['String'];
+  totpToken: Scalars['String'];
+}>;
+
+
+export type CheckIfTotpMatchesMutation = { __typename?: 'Mutation', checkIfTOTPMatches?: Maybe<{ __typename?: 'CheckCredsMatchResponse', data?: Maybe<boolean>, success: boolean, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 
 export const AddHardwareTokenDocument = gql`
@@ -458,3 +475,84 @@ export function useAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type AllUsersQueryHookResult = ReturnType<typeof useAllUsersQuery>;
 export type AllUsersLazyQueryHookResult = ReturnType<typeof useAllUsersLazyQuery>;
 export type AllUsersQueryResult = Apollo.QueryResult<AllUsersQuery, AllUsersQueryVariables>;
+export const CheckIfCredsMatchesDocument = gql`
+    mutation CheckIfCredsMatches($accountNumber: String!, $password: String!) {
+  checkIfCredsMatches(accountNumber: $accountNumber, password: $password) {
+    data
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+export type CheckIfCredsMatchesMutationFn = Apollo.MutationFunction<CheckIfCredsMatchesMutation, CheckIfCredsMatchesMutationVariables>;
+
+/**
+ * __useCheckIfCredsMatchesMutation__
+ *
+ * To run a mutation, you first call `useCheckIfCredsMatchesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckIfCredsMatchesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkIfCredsMatchesMutation, { data, loading, error }] = useCheckIfCredsMatchesMutation({
+ *   variables: {
+ *      accountNumber: // value for 'accountNumber'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useCheckIfCredsMatchesMutation(baseOptions?: Apollo.MutationHookOptions<CheckIfCredsMatchesMutation, CheckIfCredsMatchesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckIfCredsMatchesMutation, CheckIfCredsMatchesMutationVariables>(CheckIfCredsMatchesDocument, options);
+      }
+export type CheckIfCredsMatchesMutationHookResult = ReturnType<typeof useCheckIfCredsMatchesMutation>;
+export type CheckIfCredsMatchesMutationResult = Apollo.MutationResult<CheckIfCredsMatchesMutation>;
+export type CheckIfCredsMatchesMutationOptions = Apollo.BaseMutationOptions<CheckIfCredsMatchesMutation, CheckIfCredsMatchesMutationVariables>;
+export const CheckIfTotpMatchesDocument = gql`
+    mutation CheckIfTOTPMatches($accountNumber: String!, $password: String!, $totpToken: String!) {
+  checkIfTOTPMatches(
+    accountNumber: $accountNumber
+    password: $password
+    totpToken: $totpToken
+  ) {
+    data
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+export type CheckIfTotpMatchesMutationFn = Apollo.MutationFunction<CheckIfTotpMatchesMutation, CheckIfTotpMatchesMutationVariables>;
+
+/**
+ * __useCheckIfTotpMatchesMutation__
+ *
+ * To run a mutation, you first call `useCheckIfTotpMatchesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckIfTotpMatchesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkIfTotpMatchesMutation, { data, loading, error }] = useCheckIfTotpMatchesMutation({
+ *   variables: {
+ *      accountNumber: // value for 'accountNumber'
+ *      password: // value for 'password'
+ *      totpToken: // value for 'totpToken'
+ *   },
+ * });
+ */
+export function useCheckIfTotpMatchesMutation(baseOptions?: Apollo.MutationHookOptions<CheckIfTotpMatchesMutation, CheckIfTotpMatchesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CheckIfTotpMatchesMutation, CheckIfTotpMatchesMutationVariables>(CheckIfTotpMatchesDocument, options);
+      }
+export type CheckIfTotpMatchesMutationHookResult = ReturnType<typeof useCheckIfTotpMatchesMutation>;
+export type CheckIfTotpMatchesMutationResult = Apollo.MutationResult<CheckIfTotpMatchesMutation>;
+export type CheckIfTotpMatchesMutationOptions = Apollo.BaseMutationOptions<CheckIfTotpMatchesMutation, CheckIfTotpMatchesMutationVariables>;

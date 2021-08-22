@@ -1,5 +1,4 @@
 import argon2 from "argon2";
-import prismaClient from "../../../prisma/client";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import generatePassword from "../../../utils/generatePassword";
 import sendMail from "../../../utils/sendMail";
@@ -31,69 +30,6 @@ interface checkIfTOTPMatches extends checkIfCredsMatches {
 
 export const userResolver = {
   Query: {
-    checkIfCredsMatches: async (
-      _: any,
-      args: checkIfCredsMatches,
-      context: Context
-    ) => {
-      try {
-        const user = await context.prisma.user.findUnique({
-          where: {
-            accountNumber: args.accountNumber,
-          },
-        });
-        if (!user || !(await argon2.verify(user?.password, args.password))) {
-          return exceptionErrorResponse(
-            "Account doesn't exists or password isn't valid"
-          );
-        }
-        return {
-          data: true,
-          success: true,
-        };
-      } catch (e) {
-        console.log(e);
-        return exceptionErrorResponse("error while validation credentials");
-      }
-    },
-    checkIfTOTPMatches: async (
-      _: any,
-      args: checkIfTOTPMatches,
-      context: Context
-    ) => {
-      try {
-        const user = await context.prisma.user.findUnique({
-          where: {
-            accountNumber: args.accountNumber,
-          },
-        });
-        if (!user || !(await argon2.verify(user?.password, args.password))) {
-          return exceptionErrorResponse(
-            "Account doesn't exists or password isn't valid"
-          );
-        }
-        const data = speakeasy.totp.verify({
-          secret: "abcd",
-          algorithm: "sha1",
-          token: args.totpToken,
-        });
-        if (
-          speakeasy.totp.verify({
-            secret: "abcd",
-            algorithm: "sha1",
-            token: args.totpToken,
-          })
-        ) {
-          return {
-            success: true,
-            data: true,
-          };
-        }
-      } catch (e) {
-        console.log(e);
-        return exceptionErrorResponse("error while validating totp");
-      }
-    },
     findAllUsers: async (_: any, __: any, context: Context) => {
       try {
         const users = await context.prisma.user.findMany({
@@ -132,7 +68,6 @@ export const userResolver = {
         const hardwareToken = await context.prisma.hardwareToken.findUnique({
           where: { productKey: args.productKey },
         });
-        console.log("hardwareTOken", hardwareToken);
         if (!hardwareToken) {
           return exceptionErrorResponse("No such token");
         }
@@ -219,7 +154,7 @@ export const userResolver = {
           data: {
             status: "ACTIVE",
             password: password.hashedPassword,
-            isExpired: true,
+            isExpired: true, // On the basics of this, trigger the set password in frontend
           },
           where: {
             id: user.id,
@@ -244,6 +179,64 @@ export const userResolver = {
         return exceptionErrorResponse(
           "Something went wrong while registering user"
         );
+      }
+    },
+    checkIfCredsMatches: async (
+      _: any,
+      args: checkIfCredsMatches,
+      context: Context
+    ) => {
+      try {
+        const user = await context.prisma.user.findUnique({
+          where: {
+            accountNumber: args.accountNumber,
+          },
+        });
+        if (!user || !(await argon2.verify(user?.password, args.password))) {
+          return exceptionErrorResponse(
+            "Account doesn't exists or password isn't valid"
+          );
+        }
+        return {
+          data: true,
+          success: true,
+        };
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse("error while validation credentials");
+      }
+    },
+    checkIfTOTPMatches: async (
+      _: any,
+      args: checkIfTOTPMatches,
+      context: Context
+    ) => {
+      try {
+        const user = await context.prisma.user.findUnique({
+          where: {
+            accountNumber: args.accountNumber,
+          },
+        });
+        if (!user || !(await argon2.verify(user?.password, args.password))) {
+          return exceptionErrorResponse(
+            "Account doesn't exists or password isn't valid"
+          );
+        }
+        if (
+          speakeasy.totp.verify({
+            secret: "abcd",
+            algorithm: "sha1",
+            token: args.totpToken,
+          })
+        ) {
+          return {
+            success: true,
+            data: true,
+          };
+        }
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse("error while validating totp");
       }
     },
   },

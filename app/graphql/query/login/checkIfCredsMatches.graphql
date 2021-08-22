@@ -1,0 +1,9 @@
+mutation CheckIfCredsMatches($accountNumber: String!, $password: String!) {
+  checkIfCredsMatches(accountNumber: $accountNumber, password: $password) {
+    data
+    errors {
+      message
+    }
+    success
+  }
+}

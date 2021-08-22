@@ -4,15 +4,6 @@ export const userTypeDefs = gql`
   extend type Query {
     findUser(id: String): UserResponse
     findAllUsers: UsersResponse
-    checkIfCredsMatches(
-      accountNumber: String
-      password: String
-    ): CheckCredsMatchResponse
-    checkIfTOTPMatches(
-      totpToken: String
-      accountNumber: String
-      password: String
-    ): CheckCredsMatchResponse
   }
 
   extend type Mutation {
@@ -28,6 +19,15 @@ export const userTypeDefs = gql`
       accountNumber: String!
       contactNumber: String!
     ): AddUserResponse
+    checkIfCredsMatches(
+      accountNumber: String
+      password: String
+    ): CheckCredsMatchResponse
+    checkIfTOTPMatches(
+      totpToken: String
+      accountNumber: String
+      password: String
+    ): CheckCredsMatchResponse
   }
 
   type User {
