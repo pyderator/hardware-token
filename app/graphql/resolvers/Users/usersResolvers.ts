@@ -1,10 +1,11 @@
-import argon2 from "argon2";
+import argon2, { hash } from "argon2";
 import speakeasy from "speakeasy";
 import jwt from "jsonwebtoken";
 import { exceptionErrorResponse } from "../../../utils/exceptionErrorResponse";
 import generatePassword from "../../../utils/generatePassword";
 import sendMail from "../../../utils/sendMail";
 import { Context } from "../../context";
+import verifyToken from "../../../utils/verify-token";
 
 interface addUserArgs {
   firstName: string;
@@ -65,6 +66,14 @@ export const userResolver = {
           where: {
             id: context.authUser.data.id,
           },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            accountNumber: true,
+            isExpired: true,
+          },
         });
         if (!user) {
           return {
@@ -78,7 +87,7 @@ export const userResolver = {
         }
         return {
           success: true,
-          data: { id: user.id, isPasswordExpired: user.isExpired },
+          data: { ...user, isPasswordExpired: user.isExpired },
         };
       }
       return {
@@ -274,6 +283,62 @@ export const userResolver = {
             data: true,
           };
         }
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse("error while validating totp");
+      }
+    },
+    changeUserPassword: async (
+      _: any,
+      args: { password: string; confirmPassword: string },
+      context: Context
+    ) => {
+      try {
+        console.log(context.authUser);
+        if (!context.authUser.success) {
+          return {
+            success: false,
+            errors: [
+              {
+                message: "Not Authenticated",
+              },
+            ],
+          };
+        }
+        const user = await context.prisma.user.findUnique({
+          where: {
+            id: context.authUser.data.id,
+          },
+        });
+        if (!user) {
+          return exceptionErrorResponse("No such user");
+        }
+        console.log(user);
+        if (!user?.isExpired) {
+          return exceptionErrorResponse("Already Updated");
+        }
+        if (!(args.password === args.confirmPassword)) {
+          return exceptionErrorResponse("Password's didn't match");
+        }
+
+        const newPassword = await hash(args.password);
+        if (
+          await context.prisma.user.update({
+            where: {
+              id: context.authUser.data.id,
+            },
+            data: {
+              password: newPassword,
+              isExpired: false,
+            },
+          })
+        ) {
+          return {
+            success: true,
+            data: true,
+          };
+        }
+        throw new Error("Something went wrong");
       } catch (e) {
         console.log(e);
         return exceptionErrorResponse("error while validating totp");

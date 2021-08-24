@@ -40,6 +40,23 @@ export type HardwareToken = {
   hashArray?: Maybe<Scalars['String']>;
 };
 
+export type LoggedInUser = {
+  __typename?: 'LoggedInUser';
+  data?: Maybe<LoggedInUserData>;
+  errors?: Maybe<Array<Error>>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+export type LoggedInUserData = {
+  __typename?: 'LoggedInUserData';
+  id?: Maybe<Scalars['ID']>;
+  firstName?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  accountNumber?: Maybe<Scalars['String']>;
+  isPasswordExpired?: Maybe<Scalars['Boolean']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   _empty?: Maybe<Scalars['String']>;
@@ -48,6 +65,7 @@ export type Mutation = {
   registerUser?: Maybe<AddUserResponse>;
   checkIfCredsMatches?: Maybe<CheckCredsMatchResponse>;
   checkIfTOTPMatches?: Maybe<CheckCredsMatchResponse>;
+  changeUserPassword?: Maybe<CheckCredsMatchResponse>;
 };
 
 
@@ -84,6 +102,12 @@ export type MutationCheckIfTotpMatchesArgs = {
   password?: Maybe<Scalars['String']>;
 };
 
+
+export type MutationChangeUserPasswordArgs = {
+  password: Scalars['String'];
+  confirmPassword: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
@@ -92,6 +116,7 @@ export type Query = {
   getHardwareTokensUnAssigned?: Maybe<TokensResponse>;
   findUser?: Maybe<UserResponse>;
   findAllUsers?: Maybe<UsersResponse>;
+  loggedInUser?: Maybe<LoggedInUser>;
 };
 
 
@@ -179,6 +204,14 @@ export type RegisterUserMutationVariables = Exact<{
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser?: Maybe<{ __typename?: 'AddUserResponse', data?: Maybe<boolean>, success: boolean, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
+export type ChangePasswordMutationVariables = Exact<{
+  password: Scalars['String'];
+  confirmPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = { __typename?: 'Mutation', changeUserPassword?: Maybe<{ __typename?: 'CheckCredsMatchResponse', data?: Maybe<boolean>, success: boolean, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
 export type AllHardwareTokensQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -193,6 +226,11 @@ export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, hardwareTokenId?: Maybe<string>, amount?: Maybe<number>, status?: Maybe<Status>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', id?: Maybe<string>, productKey?: Maybe<string>, hashArray?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type IsUserLoggedInQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type IsUserLoggedInQuery = { __typename?: 'Query', loggedInUser?: Maybe<{ __typename?: 'LoggedInUser', success?: Maybe<boolean>, data?: Maybe<{ __typename?: 'LoggedInUserData', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, accountNumber?: Maybe<string>, isPasswordExpired?: Maybe<boolean> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 export type CheckIfCredsMatchesMutationVariables = Exact<{
   accountNumber: Scalars['String'];
@@ -345,6 +383,44 @@ export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const ChangePasswordDocument = gql`
+    mutation changePassword($password: String!, $confirmPassword: String!) {
+  changeUserPassword(password: $password, confirmPassword: $confirmPassword) {
+    data
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+export type ChangePasswordMutationFn = Apollo.MutationFunction<ChangePasswordMutation, ChangePasswordMutationVariables>;
+
+/**
+ * __useChangePasswordMutation__
+ *
+ * To run a mutation, you first call `useChangePasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChangePasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [changePasswordMutation, { data, loading, error }] = useChangePasswordMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *      confirmPassword: // value for 'confirmPassword'
+ *   },
+ * });
+ */
+export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptions<ChangePasswordMutation, ChangePasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument, options);
+      }
+export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
+export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
+export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
 export const AllHardwareTokensDocument = gql`
     query allHardwareTokens {
   getHardwareTokens {
@@ -475,6 +551,51 @@ export function useAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type AllUsersQueryHookResult = ReturnType<typeof useAllUsersQuery>;
 export type AllUsersLazyQueryHookResult = ReturnType<typeof useAllUsersLazyQuery>;
 export type AllUsersQueryResult = Apollo.QueryResult<AllUsersQuery, AllUsersQueryVariables>;
+export const IsUserLoggedInDocument = gql`
+    query isUserLoggedIn {
+  loggedInUser {
+    data {
+      id
+      firstName
+      lastName
+      email
+      accountNumber
+      isPasswordExpired
+    }
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+
+/**
+ * __useIsUserLoggedInQuery__
+ *
+ * To run a query within a React component, call `useIsUserLoggedInQuery` and pass it any options that fit your needs.
+ * When your component renders, `useIsUserLoggedInQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useIsUserLoggedInQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useIsUserLoggedInQuery(baseOptions?: Apollo.QueryHookOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(IsUserLoggedInDocument, options);
+      }
+export function useIsUserLoggedInLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>(IsUserLoggedInDocument, options);
+        }
+export type IsUserLoggedInQueryHookResult = ReturnType<typeof useIsUserLoggedInQuery>;
+export type IsUserLoggedInLazyQueryHookResult = ReturnType<typeof useIsUserLoggedInLazyQuery>;
+export type IsUserLoggedInQueryResult = Apollo.QueryResult<IsUserLoggedInQuery, IsUserLoggedInQueryVariables>;
 export const CheckIfCredsMatchesDocument = gql`
     mutation CheckIfCredsMatches($accountNumber: String!, $password: String!) {
   checkIfCredsMatches(accountNumber: $accountNumber, password: $password) {

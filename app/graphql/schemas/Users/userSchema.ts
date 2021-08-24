@@ -1,5 +1,6 @@
 import { gql } from "apollo-server-micro";
 
+// TODO: Naming conventions ;p
 export const userTypeDefs = gql`
   extend type Query {
     findUser(id: String): UserResponse
@@ -29,6 +30,10 @@ export const userTypeDefs = gql`
       accountNumber: String
       password: String
     ): CheckCredsMatchResponse
+    changeUserPassword(
+      password: String!
+      confirmPassword: String!
+    ): CheckCredsMatchResponse
   }
 
   type LoggedInUser {
@@ -39,6 +44,10 @@ export const userTypeDefs = gql`
 
   type LoggedInUserData {
     id: ID
+    firstName: String
+    lastName: String
+    email: String
+    accountNumber: String
     isPasswordExpired: Boolean
   }
 

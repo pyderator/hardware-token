@@ -2,11 +2,14 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useAuthContext } from "../context/authContext";
 import BaseLayout from "../layouts/baselayout";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
-  const router = useRouter();
+  const auth = useAuthContext();
+  console.log("I am here", auth);
+
   return (
     <div className={styles.container}>
       <Head>
