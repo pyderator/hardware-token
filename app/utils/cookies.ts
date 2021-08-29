@@ -14,11 +14,14 @@ const cookie = (
     typeof value === "object" ? "j:" + JSON.stringify(value) : String(value);
 
   if ("maxAge" in options) {
-    options.expires = new Date(Date.now() + options.maxAge);
-    options.maxAge /= 1000;
+    options.expires = new Date(Date.now() + (options.maxAge as any)) as any;
+    (options.maxAge as any) /= 1000 as any;
   }
 
-  res.setHeader("Set-Cookie", serialize(name, String(stringValue), options));
+  res.setHeader(
+    "Set-Cookie",
+    serialize(name, String(stringValue), options as any)
+  );
 };
 
 /**

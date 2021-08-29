@@ -25,3 +25,11 @@ jobs:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_PROJECT_ID: ${{ secrets.PROJECTID }}
           VERCEL_ORG_ID: ${{ secrets.ORGID }}
+          DATABASE_URL: ${{secrets.DATABASE_URL}}
+          GMAIL_PASSWORD: ${{secrets.GMAIL_PASSWORD}}
+          GMAIL_USERNAME: ${{secrets.GMAIL_USERNAME}}
+          JWT_SECRET: ${{secrets.JWT_SECRET}}
+          NEXT_PUBLIC_GRAPHQL_DEV_URL: ${{secrets.NEXT_PUBLIC_GRAPHQL_DEV_URL}}
+          SECRET_KEY: ${{secrets.SECRET_KEY}}
+
+          
