@@ -8,6 +8,7 @@ import { useIsUserLoggedInQuery } from "../generated/graphql";
 
 // Default Signed In User Context
 const defaultValues = {
+  id: "",
   firstName: "",
   lastName: "",
   email: "",
@@ -15,16 +16,16 @@ const defaultValues = {
   isAuthenticated: false,
   isPasswordExpired: false,
   loading: true,
-  setAuthContext: () => {},
+  setAuthContext: (_: any): any => {},
 };
 
-const AuthContext = createContext({});
+const AuthContext = createContext(defaultValues);
 
 // Context Provider
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const router = useRouter();
   const [state, setState] = useState<any>(defaultValues);
-  const { data, loading, error } = useIsUserLoggedInQuery();
+  const { data, loading, error, refetch } = useIsUserLoggedInQuery();
   const { enqueueSnackbar } = useSnackbar();
 
   const changeAuthContext = (data: {
@@ -40,32 +41,23 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    if (!loading) {
-      if (!data?.loggedInUser?.success) {
-        if (router.asPath.toString() !== ("/register" && "/login")) {
-          console.log("heer");
-          if (!data?.loggedInUser?.success) {
-            enqueueSnackbar("Not Authenticated", {
-              variant: "error",
-            });
-          }
-          router.push("/login");
-          return;
-        }
-        return;
-      }
+    const fetchUser = async () => {
+      const { data, loading, error } = await refetch();
       setState((prevState: any) => ({
         ...prevState,
         ...data?.loggedInUser?.data,
         loading,
         isAuthenticated: data?.loggedInUser?.success,
       }));
-      if (data.loggedInUser.data?.isPasswordExpired) {
+      if (data.loggedInUser?.data?.isPasswordExpired) {
         router.push("/updatePassword");
       }
-    }
-  }, [setState, data, loading, enqueueSnackbar]);
-  console.log(state);
+      if (state.isAuthenticated) {
+        router.push("/dashboard");
+      }
+    };
+    fetchUser();
+  }, [state.isAuthenticated]);
 
   return (
     <AuthContext.Provider

@@ -66,6 +66,8 @@ export type Mutation = {
   checkIfCredsMatches?: Maybe<CheckCredsMatchResponse>;
   checkIfTOTPMatches?: Maybe<CheckCredsMatchResponse>;
   changeUserPassword?: Maybe<CheckCredsMatchResponse>;
+  preTransactionCheck?: Maybe<PreCheckTransaction>;
+  transaction?: Maybe<Transaction>;
 };
 
 
@@ -108,6 +110,19 @@ export type MutationChangeUserPasswordArgs = {
   confirmPassword: Scalars['String'];
 };
 
+
+export type MutationPreTransactionCheckArgs = {
+  recipientAccountNumber: Scalars['String'];
+  amount: Scalars['String'];
+};
+
+
+export type MutationTransactionArgs = {
+  recipientAccountNumber: Scalars['String'];
+  amount: Scalars['String'];
+  totpToken?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']>;
@@ -117,6 +132,7 @@ export type Query = {
   findUser?: Maybe<UserResponse>;
   findAllUsers?: Maybe<UsersResponse>;
   loggedInUser?: Maybe<LoggedInUser>;
+  getUserInfo?: Maybe<UserInfo>;
 };
 
 
@@ -129,11 +145,24 @@ export type QueryFindUserArgs = {
   id?: Maybe<Scalars['String']>;
 };
 
+
+export type QueryGetUserInfoArgs = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export enum Status {
   Active = 'ACTIVE',
   NotActive = 'NOT_ACTIVE',
   Blocked = 'BLOCKED'
 }
+
+export type T = {
+  __typename?: 'T';
+  id?: Maybe<Scalars['String']>;
+  transactionId?: Maybe<Scalars['String']>;
+  fromUser?: Maybe<Scalars['String']>;
+  toUser?: Maybe<Scalars['String']>;
+};
 
 export type TokenResponse = {
   __typename?: 'TokenResponse';
@@ -147,6 +176,30 @@ export type TokensResponse = {
   data?: Maybe<Array<HardwareToken>>;
   errors?: Maybe<Array<Error>>;
   success?: Maybe<Scalars['Boolean']>;
+};
+
+export type Transaction = {
+  __typename?: 'Transaction';
+  data?: Maybe<TransactionInfo>;
+  errors?: Maybe<Array<Error>>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+export type TransactionInfo = {
+  __typename?: 'TransactionInfo';
+  newAmount?: Maybe<Scalars['String']>;
+};
+
+export type U = {
+  __typename?: 'U';
+  accountNumber?: Maybe<Scalars['String']>;
+  amount?: Maybe<Scalars['String']>;
+  contactNumber?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  hardwareTokenId?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
 };
 
 export type User = {
@@ -163,6 +216,19 @@ export type User = {
   status?: Maybe<Status>;
 };
 
+export type UserInfo = {
+  __typename?: 'UserInfo';
+  data?: Maybe<UserInfoData>;
+  errors?: Maybe<Array<Error>>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+export type UserInfoData = {
+  __typename?: 'UserInfoData';
+  transactions?: Maybe<Array<T>>;
+  user?: Maybe<U>;
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   data?: Maybe<User>;
@@ -175,6 +241,26 @@ export type UsersResponse = {
   data?: Maybe<Array<User>>;
   errors?: Maybe<Array<Error>>;
   success: Scalars['Boolean'];
+};
+
+export type PreCheckTransaction = {
+  __typename?: 'preCheckTransaction';
+  data?: Maybe<PreCheckTransactionInfo>;
+  errors?: Maybe<Array<Error>>;
+  success?: Maybe<Scalars['Boolean']>;
+};
+
+export type PreCheckTransactionInfo = {
+  __typename?: 'preCheckTransactionInfo';
+  recipientInfo?: Maybe<RecipientInfoType>;
+  amount?: Maybe<Scalars['String']>;
+};
+
+export type RecipientInfoType = {
+  __typename?: 'recipientInfoType';
+  name?: Maybe<Scalars['String']>;
+  accountNumber?: Maybe<Scalars['String']>;
+  initiatedTransactionDate?: Maybe<Scalars['String']>;
 };
 
 export type AddHardwareTokenMutationVariables = Exact<{
@@ -196,6 +282,14 @@ export type AddUserMutationVariables = Exact<{
 
 export type AddUserMutation = { __typename?: 'Mutation', addUser?: Maybe<{ __typename?: 'UserResponse', success: boolean, data?: Maybe<{ __typename?: 'User', id?: Maybe<string>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', productKey?: Maybe<string> }> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
+export type PreTransactionCheckMutationVariables = Exact<{
+  recipientAmountNumber: Scalars['String'];
+  amount: Scalars['String'];
+}>;
+
+
+export type PreTransactionCheckMutation = { __typename?: 'Mutation', preTransactionCheck?: Maybe<{ __typename?: 'preCheckTransaction', data?: Maybe<{ __typename?: 'preCheckTransactionInfo', amount?: Maybe<string>, recipientInfo?: Maybe<{ __typename?: 'recipientInfoType', name?: Maybe<string>, accountNumber?: Maybe<string>, initiatedTransactionDate?: Maybe<string> }> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
 export type RegisterUserMutationVariables = Exact<{
   accountNumber: Scalars['String'];
   contactNumber: Scalars['String'];
@@ -203,6 +297,15 @@ export type RegisterUserMutationVariables = Exact<{
 
 
 export type RegisterUserMutation = { __typename?: 'Mutation', registerUser?: Maybe<{ __typename?: 'AddUserResponse', data?: Maybe<boolean>, success: boolean, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type TransactionMutationVariables = Exact<{
+  recipientAccountNumber: Scalars['String'];
+  amount: Scalars['String'];
+  totpToken: Scalars['String'];
+}>;
+
+
+export type TransactionMutation = { __typename?: 'Mutation', transaction?: Maybe<{ __typename?: 'Transaction', success?: Maybe<boolean>, data?: Maybe<{ __typename?: 'TransactionInfo', newAmount?: Maybe<string> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 export type ChangePasswordMutationVariables = Exact<{
   password: Scalars['String'];
@@ -226,6 +329,13 @@ export type AllUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type AllUsersQuery = { __typename?: 'Query', findAllUsers?: Maybe<{ __typename?: 'UsersResponse', success: boolean, data?: Maybe<Array<{ __typename?: 'User', id?: Maybe<string>, firstName?: Maybe<string>, lastName?: Maybe<string>, email?: Maybe<string>, contactNumber?: Maybe<string>, accountNumber?: Maybe<string>, hardwareTokenId?: Maybe<string>, amount?: Maybe<number>, status?: Maybe<Status>, hardwareToken?: Maybe<{ __typename?: 'HardwareToken', id?: Maybe<string>, productKey?: Maybe<string>, hashArray?: Maybe<string> }> }>>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
+
+export type GetUserInfoQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUserInfoQuery = { __typename?: 'Query', getUserInfo?: Maybe<{ __typename?: 'UserInfo', data?: Maybe<{ __typename?: 'UserInfoData', user?: Maybe<{ __typename?: 'U', accountNumber?: Maybe<string>, amount?: Maybe<string>, contactNumber?: Maybe<string>, email?: Maybe<string>, firstName?: Maybe<string>, hardwareTokenId?: Maybe<string>, lastName?: Maybe<string>, status?: Maybe<string> }>, transactions?: Maybe<Array<{ __typename?: 'T', id?: Maybe<string>, transactionId?: Maybe<string>, fromUser?: Maybe<string>, toUser?: Maybe<string> }>> }>, errors?: Maybe<Array<{ __typename?: 'Error', message: string }>> }> };
 
 export type IsUserLoggedInQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -345,6 +455,53 @@ export function useAddUserMutation(baseOptions?: Apollo.MutationHookOptions<AddU
 export type AddUserMutationHookResult = ReturnType<typeof useAddUserMutation>;
 export type AddUserMutationResult = Apollo.MutationResult<AddUserMutation>;
 export type AddUserMutationOptions = Apollo.BaseMutationOptions<AddUserMutation, AddUserMutationVariables>;
+export const PreTransactionCheckDocument = gql`
+    mutation preTransactionCheck($recipientAmountNumber: String!, $amount: String!) {
+  preTransactionCheck(
+    recipientAccountNumber: $recipientAmountNumber
+    amount: $amount
+  ) {
+    data {
+      recipientInfo {
+        name
+        accountNumber
+        initiatedTransactionDate
+      }
+      amount
+    }
+    errors {
+      message
+    }
+  }
+}
+    `;
+export type PreTransactionCheckMutationFn = Apollo.MutationFunction<PreTransactionCheckMutation, PreTransactionCheckMutationVariables>;
+
+/**
+ * __usePreTransactionCheckMutation__
+ *
+ * To run a mutation, you first call `usePreTransactionCheckMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePreTransactionCheckMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [preTransactionCheckMutation, { data, loading, error }] = usePreTransactionCheckMutation({
+ *   variables: {
+ *      recipientAmountNumber: // value for 'recipientAmountNumber'
+ *      amount: // value for 'amount'
+ *   },
+ * });
+ */
+export function usePreTransactionCheckMutation(baseOptions?: Apollo.MutationHookOptions<PreTransactionCheckMutation, PreTransactionCheckMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PreTransactionCheckMutation, PreTransactionCheckMutationVariables>(PreTransactionCheckDocument, options);
+      }
+export type PreTransactionCheckMutationHookResult = ReturnType<typeof usePreTransactionCheckMutation>;
+export type PreTransactionCheckMutationResult = Apollo.MutationResult<PreTransactionCheckMutation>;
+export type PreTransactionCheckMutationOptions = Apollo.BaseMutationOptions<PreTransactionCheckMutation, PreTransactionCheckMutationVariables>;
 export const RegisterUserDocument = gql`
     mutation registerUser($accountNumber: String!, $contactNumber: String!) {
   registerUser(accountNumber: $accountNumber, contactNumber: $contactNumber) {
@@ -383,6 +540,51 @@ export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
+export const TransactionDocument = gql`
+    mutation Transaction($recipientAccountNumber: String!, $amount: String!, $totpToken: String!) {
+  transaction(
+    recipientAccountNumber: $recipientAccountNumber
+    amount: $amount
+    totpToken: $totpToken
+  ) {
+    data {
+      newAmount
+    }
+    errors {
+      message
+    }
+    success
+  }
+}
+    `;
+export type TransactionMutationFn = Apollo.MutationFunction<TransactionMutation, TransactionMutationVariables>;
+
+/**
+ * __useTransactionMutation__
+ *
+ * To run a mutation, you first call `useTransactionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useTransactionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [transactionMutation, { data, loading, error }] = useTransactionMutation({
+ *   variables: {
+ *      recipientAccountNumber: // value for 'recipientAccountNumber'
+ *      amount: // value for 'amount'
+ *      totpToken: // value for 'totpToken'
+ *   },
+ * });
+ */
+export function useTransactionMutation(baseOptions?: Apollo.MutationHookOptions<TransactionMutation, TransactionMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<TransactionMutation, TransactionMutationVariables>(TransactionDocument, options);
+      }
+export type TransactionMutationHookResult = ReturnType<typeof useTransactionMutation>;
+export type TransactionMutationResult = Apollo.MutationResult<TransactionMutation>;
+export type TransactionMutationOptions = Apollo.BaseMutationOptions<TransactionMutation, TransactionMutationVariables>;
 export const ChangePasswordDocument = gql`
     mutation changePassword($password: String!, $confirmPassword: String!) {
   changeUserPassword(password: $password, confirmPassword: $confirmPassword) {
@@ -551,6 +753,61 @@ export function useAllUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<A
 export type AllUsersQueryHookResult = ReturnType<typeof useAllUsersQuery>;
 export type AllUsersLazyQueryHookResult = ReturnType<typeof useAllUsersLazyQuery>;
 export type AllUsersQueryResult = Apollo.QueryResult<AllUsersQuery, AllUsersQueryVariables>;
+export const GetUserInfoDocument = gql`
+    query getUserInfo($id: String!) {
+  getUserInfo(id: $id) {
+    data {
+      user {
+        accountNumber
+        amount
+        contactNumber
+        email
+        firstName
+        hardwareTokenId
+        lastName
+        status
+      }
+      transactions {
+        id
+        transactionId
+        fromUser
+        toUser
+      }
+    }
+    errors {
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUserInfoQuery__
+ *
+ * To run a query within a React component, call `useGetUserInfoQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserInfoQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserInfoQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserInfoQuery(baseOptions: Apollo.QueryHookOptions<GetUserInfoQuery, GetUserInfoQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserInfoQuery, GetUserInfoQueryVariables>(GetUserInfoDocument, options);
+      }
+export function useGetUserInfoLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserInfoQuery, GetUserInfoQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserInfoQuery, GetUserInfoQueryVariables>(GetUserInfoDocument, options);
+        }
+export type GetUserInfoQueryHookResult = ReturnType<typeof useGetUserInfoQuery>;
+export type GetUserInfoLazyQueryHookResult = ReturnType<typeof useGetUserInfoLazyQuery>;
+export type GetUserInfoQueryResult = Apollo.QueryResult<GetUserInfoQuery, GetUserInfoQueryVariables>;
 export const IsUserLoggedInDocument = gql`
     query isUserLoggedIn {
   loggedInUser {

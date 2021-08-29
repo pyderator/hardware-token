@@ -6,12 +6,12 @@ import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai/";
 import InputField from "../components/Fields/InputField";
 import { H1 } from "../components/Headers/H1";
+import { useAuthContext } from "../context/authContext";
 import { useCheckIfCredsMatchesMutation } from "../generated/graphql";
 import BaseLayout from "../layouts/baselayout";
-function classNames(...classes: any) {
-  return classes.filter(Boolean).join(" ");
-}
+
 const Login = () => {
+  const auth = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
   const [executeCheckIfCredsMatches] = useCheckIfCredsMatchesMutation();
 
@@ -40,12 +40,12 @@ const Login = () => {
                     const { data, errors } = await executeCheckIfCredsMatches({
                       variables: e,
                     });
-                    console.log(data);
 
                     if (data?.checkIfCredsMatches?.data) {
                       enqueueSnackbar("Creds Matches", {
                         variant: "success",
                       });
+                      auth.setAuthContext({ isAuthenticated: true });
                     }
                     if (data?.checkIfCredsMatches?.errors) {
                       data.checkIfCredsMatches.errors.map((e) =>

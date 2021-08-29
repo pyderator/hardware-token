@@ -4,6 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { createContext } from "../../graphql/context";
 import { rootSchema } from "../../graphql/schema";
 import cookies from "../../utils/cookies";
+import sendMail from "../../utils/sendMail";
 
 // Configuring env to support local and production as well.
 process.env.NODE_ENV === "development"
@@ -19,7 +20,6 @@ export const config = {
 // Context
 
 // const context = createContext();
-
 export const server = new ApolloServer({
   schema: rootSchema,
   context: createContext,

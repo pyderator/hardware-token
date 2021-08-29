@@ -1,0 +1,21 @@
+mutation preTransactionCheck(
+  $recipientAmountNumber: String!
+  $amount: String!
+) {
+  preTransactionCheck(
+    recipientAccountNumber: $recipientAmountNumber
+    amount: $amount
+  ) {
+    data {
+      recipientInfo {
+        name
+        accountNumber
+        initiatedTransactionDate
+      }
+      amount
+    }
+    errors {
+      message
+    }
+  }
+}

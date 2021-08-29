@@ -8,7 +8,6 @@ import styles from "../styles/Home.module.css";
 
 export default function Home() {
   const auth = useAuthContext();
-  console.log("I am here", auth);
 
   return (
     <div className={styles.container}>

@@ -44,7 +44,6 @@ const UpdatePassword = () => {
                     const { data, errors } = await executeChangePassword({
                       variables: e,
                     });
-                    console.log(data);
 
                     if (data?.changeUserPassword?.data) {
                       enqueueSnackbar("Creds Matches", {

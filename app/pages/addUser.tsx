@@ -44,7 +44,6 @@ const AddUser = () => {
               </div>
               <div className="my-2">
                 {data?.addUser?.errors?.map((e, i) => {
-                  console.log("i am running as well");
                   return (
                     <Snackbar
                       key={i}
@@ -85,101 +84,98 @@ const AddUser = () => {
                   }}
                 >
                   {({ setFieldValue, isSubmitting, values }) => (
-                    console.log(values),
-                    (
-                      <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
-                        <div className="flex">
-                          <InputField
-                            id="firstName"
-                            type="text"
-                            name="firstName"
-                            label="First Name"
-                            placeholder="John"
-                            className="mr-0 md:mr-1"
-                          />
-                          <InputField
-                            id="lastName"
-                            type="text"
-                            name="lastName"
-                            label="Last Name"
-                            placeholder="Doe"
-                            className="ml-0 md:ml-1"
-                          />
-                        </div>
+                    <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
+                      <div className="flex">
                         <InputField
-                          id="email"
+                          id="firstName"
                           type="text"
-                          name="email"
-                          label="Email"
-                          placeholder="john@doe.com"
+                          name="firstName"
+                          label="First Name"
+                          placeholder="John"
+                          className="mr-0 md:mr-1"
                         />
                         <InputField
-                          id="text"
+                          id="lastName"
                           type="text"
-                          name="contactNumber"
-                          label="Contact Number"
-                          placeholder="9801234512"
+                          name="lastName"
+                          label="Last Name"
+                          placeholder="Doe"
+                          className="ml-0 md:ml-1"
                         />
-                        <InputField
-                          id="accountNumber"
-                          type="text"
-                          name="accountNumber"
-                          label="Account Number"
-                          placeholder="341891231723091823"
-                        />
-                        <div
-                          className={`w-full group focus-within:text-blue-500 `}
+                      </div>
+                      <InputField
+                        id="email"
+                        type="text"
+                        name="email"
+                        label="Email"
+                        placeholder="john@doe.com"
+                      />
+                      <InputField
+                        id="text"
+                        type="text"
+                        name="contactNumber"
+                        label="Contact Number"
+                        placeholder="9801234512"
+                      />
+                      <InputField
+                        id="accountNumber"
+                        type="text"
+                        name="accountNumber"
+                        label="Account Number"
+                        placeholder="341891231723091823"
+                      />
+                      <div
+                        className={`w-full group focus-within:text-blue-500 `}
+                      >
+                        <label
+                          className="text-sm font-bold"
+                          htmlFor="product-ids"
                         >
-                          <label
-                            className="text-sm font-bold"
-                            htmlFor="product-ids"
-                          >
-                            Product Key
-                          </label>
-                          <Autocomplete
-                            id="product-ids"
-                            options={
-                              unAssignedHardwareTokensData.data
-                                ?.getHardwareTokensUnAssigned?.data
-                            }
-                            autoHighlight
-                            getOptionLabel={(option: { productKey: string }) =>
-                              option.productKey
-                            }
-                            onChange={(event, newValue) => {
-                              setFieldValue("productKey", newValue?.productKey);
-                            }}
-                            renderInput={(params) => (
-                              // <div ref={params.InputProps.ref}>
-                              <div ref={params.InputProps.ref}>
-                                <input
-                                  type="text"
-                                  {...params.inputProps}
-                                  placeholder="Select product key"
-                                  className="pb-[4px] font-regular text-sm text-gray-600 w-full border-b-[1px] border-gray-300 outline-none focus:border-blue-500"
-                                />
-                              </div>
-                            )}
-                          />
-                        </div>
-                        <button
-                          disabled={isSubmitting}
-                          type="submit"
-                          className={`${
-                            !isSubmitting && "border-blue-400 hover:bg-blue-600"
-                          } border-[1.2px] rounded-md text-sm text-gray-700 font-regular p-2 hover:text-white`}
-                        >
-                          {isSubmitting ? (
-                            <CircularProgress
-                              size="small"
-                              classes={{ root: "h-4 w-4" }}
-                            />
-                          ) : (
-                            "Add"
+                          Product Key
+                        </label>
+                        <Autocomplete
+                          id="product-ids"
+                          options={
+                            unAssignedHardwareTokensData.data
+                              ?.getHardwareTokensUnAssigned?.data
+                          }
+                          autoHighlight
+                          getOptionLabel={(option: { productKey: string }) =>
+                            option.productKey
+                          }
+                          onChange={(event, newValue) => {
+                            setFieldValue("productKey", newValue?.productKey);
+                          }}
+                          renderInput={(params) => (
+                            // <div ref={params.InputProps.ref}>
+                            <div ref={params.InputProps.ref}>
+                              <input
+                                type="text"
+                                {...params.inputProps}
+                                placeholder="Select product key"
+                                className="pb-[4px] font-regular text-sm text-gray-600 w-full border-b-[1px] border-gray-300 outline-none focus:border-blue-500"
+                              />
+                            </div>
                           )}
-                        </button>
-                      </Form>
-                    )
+                        />
+                      </div>
+                      <button
+                        disabled={isSubmitting}
+                        type="submit"
+                        className={`${
+                          !isSubmitting && "border-blue-400 hover:bg-blue-600"
+                        } border-[1.2px] rounded-md text-sm text-gray-700 font-regular p-2 hover:text-white`}
+                      >
+                        {isSubmitting ? (
+                          <CircularProgress
+                            size="small"
+                            classes={{ root: "h-4 w-4" }}
+                          />
+                        ) : (
+                          "Add"
+                        )}
+                      </button>
+                    </Form>
                   )}
                 </Formik>
               </div>

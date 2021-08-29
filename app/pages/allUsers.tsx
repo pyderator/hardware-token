@@ -14,7 +14,6 @@ import BaseLayout from "../layouts/baselayout";
 const AllUsers = () => {
   const { data, loading } = useAllUsersQuery();
   const users = data?.findAllUsers?.data;
-  console.log(data);
   if (loading) return <h1>Loading</h1>;
   return (
     <BaseLayout>

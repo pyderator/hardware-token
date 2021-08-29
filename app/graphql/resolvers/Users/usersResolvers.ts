@@ -6,6 +6,7 @@ import generatePassword from "../../../utils/generatePassword";
 import sendMail from "../../../utils/sendMail";
 import { Context } from "../../context";
 import verifyToken from "../../../utils/verify-token";
+import moment from "moment";
 
 interface addUserArgs {
   firstName: string;
@@ -99,11 +100,58 @@ export const userResolver = {
         ],
       };
     },
+    getUserInfo: async (_: any, args: { id: string }, context: Context) => {
+      const user = await context.prisma.user.findUnique({
+        where: {
+          id: args.id,
+        },
+        select: {
+          accountNumber: true,
+          amount: true,
+          contactNumber: true,
+          email: true,
+          firstName: true,
+          hardwareTokenId: true,
+          lastName: true,
+          status: true,
+        },
+      });
+
+      const transactions = await context.prisma.userAndTranscations.findMany({
+        where: {
+          OR: [
+            {
+              fromUser: args.id,
+            },
+            {
+              toUser: args.id,
+            },
+          ],
+        },
+      });
+
+      if (!user) {
+        return {
+          success: false,
+          errors: [
+            {
+              message: "User not logged in",
+            },
+          ],
+        };
+      }
+      return {
+        data: {
+          user: user,
+          transactions: transactions,
+        },
+        success: true,
+      };
+    },
   },
   Mutation: {
     addUser: async (_: any, args: addUserArgs, context: Context) => {
       try {
-        console.log("here");
         const { productKey, ...userInfo } = args;
         //TODO: Add is active check
         const hardwareToken = await context.prisma.hardwareToken.findUnique({
@@ -294,7 +342,6 @@ export const userResolver = {
       context: Context
     ) => {
       try {
-        console.log(context.authUser);
         if (!context.authUser.success) {
           return {
             success: false,
@@ -313,7 +360,6 @@ export const userResolver = {
         if (!user) {
           return exceptionErrorResponse("No such user");
         }
-        console.log(user);
         if (!user?.isExpired) {
           return exceptionErrorResponse("Already Updated");
         }
@@ -342,6 +388,137 @@ export const userResolver = {
       } catch (e) {
         console.log(e);
         return exceptionErrorResponse("error while validating totp");
+      }
+    },
+
+    preTransactionCheck: async (
+      _: any,
+      args: { recipientAccountNumber: string; amount: string },
+      context: Context
+    ) => {
+      try {
+        const findRecipient = await context.prisma.user.findUnique({
+          where: {
+            accountNumber: args.recipientAccountNumber,
+          },
+        });
+        const findUser = await context.prisma.user.findUnique({
+          where: {
+            id: context.authUser.data.id,
+          },
+        });
+        if (!findUser || !findRecipient) {
+          return {
+            errors: [{ message: "No such account" }],
+            success: false,
+          };
+        }
+        //TODO: Check whether the user is blocked or not.
+        if (findUser.amount < parseInt(args.amount)) {
+          return {
+            errors: [{ message: "Insufficient Amount" }],
+            success: false,
+          };
+        }
+        return {
+          success: true,
+          data: {
+            recipientInfo: {
+              name: `${findRecipient.firstName} ${findRecipient.lastName}`,
+              accountNumber: findRecipient.accountNumber,
+              initiatedTransactionDate: moment(new Date()).format(
+                "YYYY-MM-DD HH:mm:ss"
+              ),
+            },
+            amount: args.amount,
+          },
+        };
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse(e);
+      }
+    },
+
+    transaction: async (
+      _: any,
+      args: {
+        recipientAccountNumber: string;
+        amount: string;
+        totpToken: string;
+      },
+      context: Context
+    ) => {
+      try {
+        const findRecipient = await context.prisma.user.findUnique({
+          where: {
+            accountNumber: args.recipientAccountNumber,
+          },
+        });
+        const findUser = await context.prisma.user.findUnique({
+          where: {
+            id: context.authUser.data.id,
+          },
+          include: {
+            hardwareToken: true,
+          },
+        });
+        if (!findUser || !findRecipient) {
+          throw new Error("Cannot fetch user and recipient");
+        }
+        //TODO: Check whether the user is blocked or not.
+        if (findUser.amount < parseInt(args.amount)) {
+          throw new Error("Insufficient amount");
+        }
+        const userNewAmount = (findUser.amount -= parseInt(args.amount));
+        const recipientNewAmount = (findRecipient.amount += parseInt(
+          args.amount
+        ));
+        // Checking TOTP
+        if (
+          !speakeasy.totp.verify({
+            secret: findUser.hardwareToken?.hash!,
+            algorithm: "sha1",
+            token: args.totpToken,
+          })
+        ) {
+          return {
+            success: false,
+            errors: [
+              {
+                message: "Totp token mis match",
+              },
+            ],
+          };
+        }
+        // Updating
+        const updatedRecipient = await context.prisma.user.update({
+          where: {
+            id: findRecipient.id,
+          },
+          data: {
+            amount: recipientNewAmount,
+          },
+        });
+        const updatedUser = await context.prisma.user.update({
+          where: {
+            id: findUser.id,
+          },
+          data: {
+            amount: userNewAmount,
+          },
+        });
+        if (!updatedRecipient || !updatedUser) {
+          throw new Error("Error while updating data");
+        }
+        return {
+          data: {
+            newAmount: updatedUser.amount.toString(),
+          },
+          success: true,
+        };
+      } catch (e) {
+        console.log(e);
+        return exceptionErrorResponse("something went wrong");
       }
     },
   },

@@ -4,8 +4,12 @@ import { gql } from "apollo-server-micro";
 export const userTypeDefs = gql`
   extend type Query {
     findUser(id: String): UserResponse
+
     findAllUsers: UsersResponse
+
     loggedInUser: LoggedInUser
+
+    getUserInfo(id: String): UserInfo
   }
 
   extend type Mutation {
@@ -17,23 +21,94 @@ export const userTypeDefs = gql`
       accountNumber: String!
       productKey: String!
     ): UserResponse
+
     registerUser(
       accountNumber: String!
       contactNumber: String!
     ): AddUserResponse
+
     checkIfCredsMatches(
       accountNumber: String
       password: String
     ): CheckCredsMatchResponse
+
     checkIfTOTPMatches(
       totpToken: String
       accountNumber: String
       password: String
     ): CheckCredsMatchResponse
+
     changeUserPassword(
       password: String!
       confirmPassword: String!
     ): CheckCredsMatchResponse
+
+    preTransactionCheck(
+      recipientAccountNumber: String!
+      amount: String!
+    ): preCheckTransaction
+
+    transaction(
+      recipientAccountNumber: String!
+      amount: String!
+      totpToken: String
+    ): Transaction
+  }
+
+  type preCheckTransaction {
+    data: preCheckTransactionInfo
+    errors: [Error!]
+    success: Boolean
+  }
+
+  type preCheckTransactionInfo {
+    recipientInfo: recipientInfoType
+    amount: String
+  }
+
+  type recipientInfoType {
+    name: String
+    accountNumber: String
+    initiatedTransactionDate: String
+  }
+
+  type Transaction {
+    data: TransactionInfo
+    errors: [Error!]
+    success: Boolean
+  }
+
+  type TransactionInfo {
+    newAmount: String
+  }
+
+  type UserInfo {
+    data: UserInfoData
+    errors: [Error!]
+    success: Boolean
+  }
+
+  type UserInfoData {
+    transactions: [T!]
+    user: U
+  }
+
+  type T {
+    id: String
+    transactionId: String
+    fromUser: String
+    toUser: String
+  }
+
+  type U {
+    accountNumber: String
+    amount: String
+    contactNumber: String
+    email: String
+    firstName: String
+    hardwareTokenId: String
+    lastName: String
+    status: String
   }
 
   type LoggedInUser {
