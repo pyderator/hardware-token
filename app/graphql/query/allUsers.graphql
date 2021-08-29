@@ -1,0 +1,24 @@
+query AllUsers {
+  findAllUsers {
+    data {
+      id
+      firstName
+      lastName
+      email
+      contactNumber
+      accountNumber
+      hardwareTokenId
+      hardwareToken {
+        id
+        productKey
+        hashArray
+      }
+      amount
+      status
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

@@ -1,0 +1,12 @@
+query allHardwareTokens {
+  getHardwareTokens {
+    data {
+      id
+      productKey
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

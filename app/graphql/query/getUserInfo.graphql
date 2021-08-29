@@ -1,0 +1,26 @@
+query getUserInfo($id: String!) {
+  getUserInfo(id: $id) {
+    data {
+      user {
+        accountNumber
+        amount
+        contactNumber
+        email
+        firstName
+        hardwareTokenId
+        lastName
+        status
+      }
+      transactions {
+        id
+        transactionId
+        fromUser
+        toUser
+      }
+    }
+
+    errors {
+      message
+    }
+  }
+}

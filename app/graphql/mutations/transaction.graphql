@@ -1,0 +1,19 @@
+mutation Transaction(
+  $recipientAccountNumber: String!
+  $amount: String!
+  $totpToken: String!
+) {
+  transaction(
+    recipientAccountNumber: $recipientAccountNumber
+    amount: $amount
+    totpToken: $totpToken
+  ) {
+    data {
+      newAmount
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

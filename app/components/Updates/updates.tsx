@@ -6,7 +6,7 @@ import React from "react";
 export const Updates = () => {
   return (
     <div className="w-full pt-16">
-      <div className="w-full max-w-md p-2 mx-auto bg-white rounded-2xl">
+      <div className="w-full max-w-[800px] p-2 mx-auto bg-white rounded-2xl">
         <Disclosure>
           {({ open }) => (
             <>

@@ -1,0 +1,16 @@
+query isUserLoggedIn {
+  loggedInUser {
+    data {
+      id
+      firstName
+      lastName
+      email
+      accountNumber
+      isPasswordExpired
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

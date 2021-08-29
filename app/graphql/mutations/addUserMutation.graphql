@@ -1,0 +1,28 @@
+mutation addUser(
+  $firstName: String!
+  $lastName: String!
+  $email: String!
+  $contactNumber: String!
+  $accountNumber: String!
+  $productKey: String!
+) {
+  addUser(
+    firstName: $firstName
+    lastName: $lastName
+    email: $email
+    contactNumber: $contactNumber
+    accountNumber: $accountNumber
+    productKey: $productKey
+  ) {
+    data {
+      id
+      hardwareToken {
+        productKey
+      }
+    }
+    errors {
+      message
+    }
+    success
+  }
+}

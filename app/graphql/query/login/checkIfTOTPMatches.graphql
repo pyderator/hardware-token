@@ -1,0 +1,17 @@
+mutation CheckIfTOTPMatches(
+  $accountNumber: String!
+  $password: String!
+  $totpToken: String!
+) {
+  checkIfTOTPMatches(
+    accountNumber: $accountNumber
+    password: $password
+    totpToken: $totpToken
+  ) {
+    data
+    errors {
+      message
+    }
+    success
+  }
+}
