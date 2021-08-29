@@ -137,7 +137,7 @@ const AddUser = () => {
                           id="product-ids"
                           options={
                             unAssignedHardwareTokensData.data
-                              ?.getHardwareTokensUnAssigned?.data
+                              ?.getHardwareTokensUnAssigned?.data as any
                           }
                           autoHighlight
                           getOptionLabel={(option: { productKey: string }) =>
