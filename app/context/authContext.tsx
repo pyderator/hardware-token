@@ -51,9 +51,11 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
       }));
       if (data.loggedInUser?.data?.isPasswordExpired) {
         router.push("/updatePassword");
+        return;
       }
       if (state.isAuthenticated) {
         router.push("/dashboard");
+        return;
       }
     };
     fetchUser();
