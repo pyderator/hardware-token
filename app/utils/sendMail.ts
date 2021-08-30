@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { google } from "googleapis";
 
 // async..await is not allowed in global scope, must use a wrapper
 const sendMail = async ({
@@ -10,16 +11,30 @@ const sendMail = async ({
   username: string;
   password: string;
 }) => {
-  // Generate test SMTP service account from ethereal.email
-  // Only needed if you don't have a real mail account for testing
-  // create reusable transporter object using the default SMTP transport
+  const CLIENT_ID = process.env.CLIENT_ID;
+  const CLIENT_SECRET = process.env.CLIENT_SECRET;
+  const REDIRECT_URI = process.env.REDIRECT_URI;
+  const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+
+  const oAuth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+  );
+  oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+  const ACCESS_TOKEN = await oAuth2Client.getAccessToken();
   let transporter = nodemailer.createTransport({
     service: "gmail",
-    secure: false, // true for 465, false for other ports
+    port: 465,
+    secure: true,
     auth: {
-      user: process.env.GMAIL_USERNAME, // generated ethereal user
-      pass: process.env.GMAIL_PASSWORD, // generated ethereal password
-    },
+      type: "OAuth2",
+      user: process.env.GMAIL_USER,
+      clientId: CLIENT_ID,
+      clientSecret: CLIENT_SECRET,
+      refreshToken: REFRESH_TOKEN,
+      accessToken: ACCESS_TOKEN,
+    } as any,
   });
 
   // send mail with defined transport object
