@@ -17,10 +17,6 @@ export const config = {
   },
 };
 
-// Context
-
-sendMail({ password: "asd", to: "oscarmike286@gmail.com", username: "asd" });
-// const context = createContext();
 export const server = new ApolloServer({
   schema: rootSchema,
   context: createContext,
