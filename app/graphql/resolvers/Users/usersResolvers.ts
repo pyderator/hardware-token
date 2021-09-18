@@ -254,7 +254,7 @@ export const userResolver = {
             "Something went wrong while activating user"
           );
         }
-        sendMail({
+        await sendMail({
           to: user.email,
           password: password.password,
           username: user.accountNumber,
