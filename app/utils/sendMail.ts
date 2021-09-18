@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { google } from "googleapis";
+import AWS from "aws-sdk";
 
 // async..await is not allowed in global scope, must use a wrapper
 const sendMail = async ({
@@ -11,45 +12,64 @@ const sendMail = async ({
   username: string;
   password: string;
 }) => {
-  const CLIENT_ID = process.env.CLIENT_ID;
-  const CLIENT_SECRET = process.env.CLIENT_SECRET;
-  const REDIRECT_URI = process.env.REDIRECT_URI;
-  const REFRESH_TOKEN = process.env.REFRESH_TOKEN;
+  try {
+    const smtpEndpoint = process.env.AWS_STMP_ENDPOINT;
 
-  const oAuth2Client = new google.auth.OAuth2(
-    CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI
-  );
-  oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-  const ACCESS_TOKEN = await oAuth2Client.getAccessToken();
-  let transporter = nodemailer.createTransport({
-    service: "gmail",
-    host: "smtp.gmail.com",
-    auth: {
-      type: "OAuth2",
-      user: process.env.GMAIL_USER,
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      refreshToken: REFRESH_TOKEN,
-      accessToken: ACCESS_TOKEN,
-    } as any,
-  });
+    const port = 587;
 
-  // send mail with defined transport object
-  let info = await transporter.sendMail({
-    from: '"Gaurav Jha 👻" <foo@example.com>', // sender address
-    to,
-    subject: "Finish registering your account", // Subject line
-    html: `
-    <h1>Your username is ${username}</h1>
-    <h1>Your password is ${password}</h1>
-    `,
-  });
+    const senderAddress = process.env.SENDER_ADDRESS;
 
-  console.log(info.response);
+    var toAddresses = to;
 
-  console.log("Message sent: %s", info.messageId);
+    const smtpUsername = process.env.AWS_SES_USERNAME;
+
+    const smtpPassword = process.env.AWS_SES_PASSWORD;
+
+    var subject = "Username and Password";
+
+    var body_text = `Amazon SES Test (Nodemailer)
+                  ---------------------------------
+                  This email was sent through the Amazon SES SMTP interface using Nodemailer.
+                  `;
+
+    // The body of the email for recipients whose email clients support HTML content.
+    var body_html = `<html>
+                  <head></head>
+                  <body>
+                    <h1>Here are your credentials</h1>
+                    <p>Username: ${username}</p>
+                    <p>Password: ${password}</p>
+                  </body>
+                  </html>`;
+
+    let transporter = nodemailer.createTransport({
+      host: smtpEndpoint,
+      port: port,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user: smtpUsername,
+        pass: smtpPassword,
+      },
+    });
+
+    let mailOptions = {
+      from: senderAddress,
+      to: toAddresses,
+      subject: subject,
+      text: body_text,
+      html: body_html,
+    };
+
+    let info = await transporter.sendMail(mailOptions);
+
+    console.log(info);
+
+    console.log(info.response);
+
+    console.log("Message sent: %s", info.messageId);
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 export default sendMail;
