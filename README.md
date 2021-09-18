@@ -20,5 +20,8 @@ Implementing Variable Hardware Token Technology to Replace Constant 4 Digit Tran
 ## Technology Used
 
 - Next JS
-- Node with Express
-- Postgres & Redis
+- GraphQL
+- Postgres
+- Apollo Client & Server
+- Heroku as DBaas
+- Vercel as Paas
