@@ -22,14 +22,14 @@ const Login = () => {
         <Head>
           <title>Login</title>
         </Head>
-        <main className="h-screen">
+        <main className='h-screen'>
           {/* Login Div */}
-          <div className="flex align-center justify-center">
-            <div className="h-full bg-white w-full md:min-w-[400px] max-w-[600px]">
-              <div className="text-center">
+          <div className='flex align-center justify-center'>
+            <div className='h-full bg-white w-full md:min-w-[400px] max-w-[600px]'>
+              <div className='text-center'>
                 <H1>Login</H1>
               </div>
-              <div className="mt-6">
+              <div className='mt-6'>
                 <Formik
                   initialValues={{
                     accountNumber: "",
@@ -42,7 +42,7 @@ const Login = () => {
                     });
 
                     if (data?.checkIfCredsMatches?.data) {
-                      enqueueSnackbar("Creds Matches", {
+                      enqueueSnackbar("Login Successful", {
                         variant: "success",
                       });
                       auth.setAuthContext({ isAuthenticated: true });
@@ -55,46 +55,46 @@ const Login = () => {
                   }}
                 >
                   {({ values, setFieldValue, isSubmitting }) => (
-                    <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
+                    <Form className='grid grid-cols-1 grid-rows-auto gap-y-8'>
                       <InputField
-                        id="accountNumber"
-                        type="text"
-                        name="accountNumber"
-                        label="Account Number"
-                        placeholder="Enter your account number"
+                        id='accountNumber'
+                        type='text'
+                        name='accountNumber'
+                        label='Account Number'
+                        placeholder='Enter your account number'
                       />
-                      <div className="relative">
+                      <div className='relative'>
                         <InputField
-                          id="password"
+                          id='password'
                           type={`${showPassword ? "text" : "password"}`}
-                          name="password"
-                          label="Password"
-                          placeholder="Enter your password"
+                          name='password'
+                          label='Password'
+                          placeholder='Enter your password'
                         />
                         <button
-                          type="button"
-                          className="absolute top-[28px] right-0"
+                          type='button'
+                          className='absolute top-[28px] right-0'
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
-                            <AiFillEyeInvisible className="text-xl" />
+                            <AiFillEyeInvisible className='text-xl' />
                           ) : (
-                            <AiFillEye className="text-xl" />
+                            <AiFillEye className='text-xl' />
                           )}
                         </button>
                       </div>
-                      <div className="flex items-center">
-                        <p className="text-sm font-bold text-gray-500 mr-2">
+                      <div className='flex items-center'>
+                        <p className='text-sm font-bold text-gray-500 mr-2'>
                           {` Don't have an account ?`}
                         </p>
-                        <Link href="/register" passHref>
-                          <p className="text-sm  font-bold text-blue-600 cursor-pointer">
+                        <Link href='/register' passHref>
+                          <p className='text-sm  font-bold text-blue-600 cursor-pointer'>
                             Sign up
                           </p>
                         </Link>
                       </div>
                       <button
-                        type="submit"
+                        type='submit'
                         disabled={isSubmitting}
                         className={`${
                           isSubmitting

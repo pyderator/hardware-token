@@ -1,6 +1,7 @@
 import { Form, Formik } from "formik";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useState } from "react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai/";
@@ -20,20 +21,21 @@ const UpdatePassword = () => {
   const [executeChangePassword] = useChangePasswordMutation();
 
   const { enqueueSnackbar } = useSnackbar();
+  const router = useRouter();
   return (
     <BaseLayout>
       <div>
         <Head>
           <title>Update Password</title>
         </Head>
-        <main className="h-screen">
+        <main className='h-screen'>
           {/* Login Div */}
-          <div className="flex align-center justify-center">
-            <div className="h-full bg-white w-full md:min-w-[400px] max-w-[600px]">
-              <div className="text-center">
+          <div className='flex align-center justify-center'>
+            <div className='h-full bg-white w-full md:min-w-[400px] max-w-[600px]'>
+              <div className='text-center'>
                 <H1>Update Password</H1>
               </div>
-              <div className="mt-6">
+              <div className='mt-6'>
                 <Formik
                   initialValues={{
                     password: "",
@@ -46,9 +48,10 @@ const UpdatePassword = () => {
                     });
 
                     if (data?.changeUserPassword?.data) {
-                      enqueueSnackbar("Creds Matches", {
+                      enqueueSnackbar("Updated Password Successfully", {
                         variant: "success",
                       });
+                      router.push("/dashboard");
                     }
                     if (data?.changeUserPassword?.errors) {
                       data.changeUserPassword.errors.map((e) =>
@@ -58,51 +61,51 @@ const UpdatePassword = () => {
                   }}
                 >
                   {({ values, setFieldValue, isSubmitting }) => (
-                    <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
-                      <div className="relative">
+                    <Form className='grid grid-cols-1 grid-rows-auto gap-y-8'>
+                      <div className='relative'>
                         <InputField
-                          id="password"
+                          id='password'
                           type={`${showPassword ? "text" : "password"}`}
-                          name="password"
-                          label="Password"
-                          placeholder="Enter your password"
+                          name='password'
+                          label='Password'
+                          placeholder='Enter your password'
                         />
                         <button
-                          type="button"
-                          className="absolute top-[28px] right-0"
+                          type='button'
+                          className='absolute top-[28px] right-0'
                           onClick={() => setShowPassword(!showPassword)}
                         >
                           {showPassword ? (
-                            <AiFillEyeInvisible className="text-xl" />
+                            <AiFillEyeInvisible className='text-xl' />
                           ) : (
-                            <AiFillEye className="text-xl" />
+                            <AiFillEye className='text-xl' />
                           )}
                         </button>
                       </div>
-                      <div className="relative">
+                      <div className='relative'>
                         <InputField
-                          id="confirmPassword"
+                          id='confirmPassword'
                           type={`${showConfirmPassword ? "text" : "password"}`}
-                          name="confirmPassword"
-                          label="Confirm Password"
-                          placeholder="Please re-type your password"
+                          name='confirmPassword'
+                          label='Confirm Password'
+                          placeholder='Please re-type your password'
                         />
                         <button
-                          type="button"
-                          className="absolute top-[28px] right-0"
+                          type='button'
+                          className='absolute top-[28px] right-0'
                           onClick={() =>
                             setShowConfirmPassword(!showConfirmPassword)
                           }
                         >
                           {showConfirmPassword ? (
-                            <AiFillEyeInvisible className="text-xl" />
+                            <AiFillEyeInvisible className='text-xl' />
                           ) : (
-                            <AiFillEye className="text-xl" />
+                            <AiFillEye className='text-xl' />
                           )}
                         </button>
                       </div>
                       <button
-                        type="submit"
+                        type='submit'
                         disabled={isSubmitting}
                         className={`${
                           isSubmitting

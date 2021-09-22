@@ -35,14 +35,14 @@ const AddUser = () => {
         <Head>
           <title>Add User</title>
         </Head>
-        <main className="h-screen">
+        <main className='h-screen'>
           {/* Login Div */}
-          <div className="flex align-center justify-center">
-            <div className="h-full bg-white w-full md:min-w-[400px] max-w-[400px]">
-              <div className="text-left">
+          <div className='flex align-center justify-center'>
+            <div className='h-full bg-white w-full md:min-w-[400px] max-w-[400px]'>
+              <div className='text-left'>
                 <H1>Add User</H1>
               </div>
-              <div className="my-2">
+              <div className='my-2'>
                 {data?.addUser?.errors?.map((e, i) => {
                   return (
                     <Snackbar
@@ -51,14 +51,14 @@ const AddUser = () => {
                       autoHideDuration={6000}
                       onClose={() => setOpen(false)}
                     >
-                      <Alert severity="error" variant="outlined">
+                      <Alert severity='error' variant='outlined'>
                         {e.message}
                       </Alert>
                     </Snackbar>
                   );
                 })}
               </div>
-              <div className="mt-6">
+              <div className='mt-6'>
                 <Formik
                   initialValues={{
                     firstName: "",
@@ -70,7 +70,7 @@ const AddUser = () => {
                   }}
                   onSubmit={async (e, { setSubmitting }) => {
                     setSubmitting(true);
-                    await addUser({ variables: { ...e } });
+                    const { data } = await addUser({ variables: { ...e } });
                     if (data?.addUser?.success) {
                       enqueueSnackbar("Added user successfully", {
                         variant: "success",
@@ -84,57 +84,57 @@ const AddUser = () => {
                   }}
                 >
                   {({ setFieldValue, isSubmitting, values }) => (
-                    <Form className="grid grid-cols-1 grid-rows-auto gap-y-8">
-                      <div className="flex">
+                    <Form className='grid grid-cols-1 grid-rows-auto gap-y-8'>
+                      <div className='flex'>
                         <InputField
-                          id="firstName"
-                          type="text"
-                          name="firstName"
-                          label="First Name"
-                          placeholder="John"
-                          className="mr-0 md:mr-1"
+                          id='firstName'
+                          type='text'
+                          name='firstName'
+                          label='First Name'
+                          placeholder='John'
+                          className='mr-0 md:mr-1'
                         />
                         <InputField
-                          id="lastName"
-                          type="text"
-                          name="lastName"
-                          label="Last Name"
-                          placeholder="Doe"
-                          className="ml-0 md:ml-1"
+                          id='lastName'
+                          type='text'
+                          name='lastName'
+                          label='Last Name'
+                          placeholder='Doe'
+                          className='ml-0 md:ml-1'
                         />
                       </div>
                       <InputField
-                        id="email"
-                        type="text"
-                        name="email"
-                        label="Email"
-                        placeholder="john@doe.com"
+                        id='email'
+                        type='text'
+                        name='email'
+                        label='Email'
+                        placeholder='john@doe.com'
                       />
                       <InputField
-                        id="text"
-                        type="text"
-                        name="contactNumber"
-                        label="Contact Number"
-                        placeholder="9801234512"
+                        id='text'
+                        type='text'
+                        name='contactNumber'
+                        label='Contact Number'
+                        placeholder='9801234512'
                       />
                       <InputField
-                        id="accountNumber"
-                        type="text"
-                        name="accountNumber"
-                        label="Account Number"
-                        placeholder="341891231723091823"
+                        id='accountNumber'
+                        type='text'
+                        name='accountNumber'
+                        label='Account Number'
+                        placeholder='341891231723091823'
                       />
                       <div
                         className={`w-full group focus-within:text-blue-500 `}
                       >
                         <label
-                          className="text-sm font-bold"
-                          htmlFor="product-ids"
+                          className='text-sm font-bold'
+                          htmlFor='product-ids'
                         >
                           Product Key
                         </label>
                         <Autocomplete
-                          id="product-ids"
+                          id='product-ids'
                           options={
                             unAssignedHardwareTokensData.data
                               ?.getHardwareTokensUnAssigned?.data as any
@@ -150,10 +150,10 @@ const AddUser = () => {
                             // <div ref={params.InputProps.ref}>
                             <div ref={params.InputProps.ref}>
                               <input
-                                type="text"
+                                type='text'
                                 {...params.inputProps}
-                                placeholder="Select product key"
-                                className="pb-[4px] font-regular text-sm text-gray-600 w-full border-b-[1px] border-gray-300 outline-none focus:border-blue-500"
+                                placeholder='Select product key'
+                                className='pb-[4px] font-regular text-sm text-gray-600 w-full border-b-[1px] border-gray-300 outline-none focus:border-blue-500'
                               />
                             </div>
                           )}
@@ -161,14 +161,14 @@ const AddUser = () => {
                       </div>
                       <button
                         disabled={isSubmitting}
-                        type="submit"
+                        type='submit'
                         className={`${
                           !isSubmitting && "border-blue-400 hover:bg-blue-600"
                         } border-[1.2px] rounded-md text-sm text-gray-700 font-regular p-2 hover:text-white`}
                       >
                         {isSubmitting ? (
                           <CircularProgress
-                            size="small"
+                            size='small'
                             classes={{ root: "h-4 w-4" }}
                           />
                         ) : (
