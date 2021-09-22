@@ -26,6 +26,9 @@ const AddUser = () => {
   const [open, setOpen] = useState(true);
   const [addUser, { data, loading, error }] = useAddUserMutation();
   const unAssignedHardwareTokensData = useGetNonAssignedHardwareTokensQuery();
+  useEffect(() => {
+    unAssignedHardwareTokensData.refetch();
+  }, []);
   if (unAssignedHardwareTokensData.loading) {
     return <h1>Loading</h1>;
   }
