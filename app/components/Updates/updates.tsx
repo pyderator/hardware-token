@@ -5,12 +5,12 @@ import React from "react";
 
 export const Updates = () => {
   return (
-    <div className="w-full pt-16">
-      <div className="w-full max-w-[800px] p-2 mx-auto bg-white rounded-2xl">
+    <div className='w-full pt-16'>
+      <div className='w-full max-w-[800px] p-2 mx-auto bg-white rounded-2xl'>
         <Disclosure>
           {({ open }) => (
             <>
-              <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75">
+              <Disclosure.Button className='flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 bg-blue-100 rounded-lg hover:bg-blue-200 focus:outline-none focus-visible:ring focus-visible:ring-blue-500 focus-visible:ring-opacity-75'>
                 <span>Latest Updates</span>
                 <ChevronUpIcon
                   className={`${
@@ -19,33 +19,57 @@ export const Updates = () => {
                 />
               </Disclosure.Button>
               <Transition
-                enter="transition duration-100 ease-out"
-                enterFrom="transform scale-95 opacity-0"
-                enterTo="transform scale-100 opacity-100"
-                leave="transition duration-75 ease-out"
-                leaveFrom="transform scale-100 opacity-100"
-                leaveTo="transform scale-95 opacity-0"
+                enter='transition duration-100 ease-out'
+                enterFrom='transform scale-95 opacity-0'
+                enterTo='transform scale-100 opacity-100'
+                leave='transition duration-75 ease-out'
+                leaveFrom='transform scale-100 opacity-100'
+                leaveTo='transform scale-95 opacity-0'
               >
                 <Disclosure.Panel
                   static
-                  className="px-4 pt-4 pb-2 text-sm text-gray-500 grid grid-cols-1 gap-y-4"
+                  className='px-4 pt-4 pb-2 text-sm text-gray-500 grid grid-cols-1 gap-y-4'
                 >
-                  <Link href="/register">
+                  <Link href='/register'>
                     <a>
                       1. Added Register Page |{" "}
-                      <span className="text-xs text-blue-600">1 Aug, 2021</span>
+                      <span className='text-xs text-blue-600'>1 Aug, 2021</span>
                     </a>
                   </Link>
-                  <Link href="https://github.com/pyderator/hardware-token/actions">
-                    <a target="_blank">
+                  <Link href='https://github.com/pyderator/hardware-token/actions'>
+                    <a target='_blank'>
                       2. Setup Github Actions and Linked to Vercel |{" "}
-                      <span className="text-xs text-blue-600">1 Aug, 2021</span>
+                      <span className='text-xs text-blue-600'>1 Aug, 2021</span>
                     </a>
                   </Link>
-                  <Link href="/login">
+                  <Link href='/login'>
                     <a>
                       3. Added Login Page |{" "}
-                      <span className="text-xs text-blue-600">1 Aug, 2021</span>
+                      <span className='text-xs text-blue-600'>1 Aug, 2021</span>
+                    </a>
+                  </Link>
+                  <Link href='/addHardwareToken'>
+                    <a>
+                      4. Added Hardware Token Page |{" "}
+                      <span className='text-xs text-blue-600'>
+                        20 Aug, 2021
+                      </span>
+                    </a>
+                  </Link>
+                  <Link href='/addUser'>
+                    <a>
+                      5. Added Add User Page |{" "}
+                      <span className='text-xs text-blue-600'>
+                        22 Aug, 2021
+                      </span>
+                    </a>
+                  </Link>
+                  <Link href='/addUser'>
+                    <a>
+                      6. Added User Dashboard |{" "}
+                      <span className='text-xs text-blue-600'>
+                        01 Sept, 2021
+                      </span>{" "}
                     </a>
                   </Link>
                 </Disclosure.Panel>

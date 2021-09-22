@@ -37,7 +37,7 @@ const sendMail = async ({
                   <head></head>
                   <body>
                     <h1>Here are your credentials</h1>
-                    <p>Username: ${username}</p>
+                    <p>Account Number: ${username}</p>
                     <p>Password: ${password}</p>
                   </body>
                   </html>`;
