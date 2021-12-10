@@ -26,6 +26,4 @@ Implementing Variable Hardware Token Technology to Replace Constant 4 Digit Tran
 - Heroku as DBaas
 - Vercel as Paas
 
-## Note
 
-You have to pay to use our Source Code of the project.
